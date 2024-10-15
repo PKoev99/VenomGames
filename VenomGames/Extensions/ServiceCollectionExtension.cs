@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using VenomGames.Data;
+using VenomGames.Infrastructure.Data;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

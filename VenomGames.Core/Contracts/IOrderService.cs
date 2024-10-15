@@ -19,7 +19,7 @@ namespace VenomGames.Core.Contracts
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <returns>List of orders placed by the user.</returns>
-        IEnumerable<Order> GetOrdersByUserId(int userId);
+        IEnumerable<Order> GetOrdersByUserId(string userId);
 
         /// <summary>
         /// Retrieves an order by its ID.
