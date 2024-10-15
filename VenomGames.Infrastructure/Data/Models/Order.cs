@@ -22,20 +22,27 @@ namespace VenomGames.Infrastructure.Data.Models
         /// Unique identifier for the user who placed the order
         /// </summary>
         [Comment("Order user identifier")]
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         /// <summary>
         /// User who placed the order.
         /// </summary>
         [ForeignKey(nameof(UserId))]
         [Comment("Order user")]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; } = null!;
 
         /// <summary>
-        /// Collection of games in the order
+        /// Id of ordered game.
         /// </summary>
-        [Comment("Order games")]
-        public ICollection<Game> Games { get; set; } = new List<Game>();
+        [Comment("Order user")]
+        public int GameId { get; set; }
+
+        /// <summary>
+        /// Ordered game
+        /// </summary>
+        [ForeignKey(nameof(GameId))]
+        [Comment("Order game")]
+        public Game Game { get; set; } = null!;
 
         /// <summary>
         /// Date when the order was placed.

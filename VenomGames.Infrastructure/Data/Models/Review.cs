@@ -35,9 +35,13 @@ namespace VenomGames.Infrastructure.Data.Models
         /// User identifier for reviewer.
         /// </summary>
         [Comment("User Identifier")]
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
+        /// <summary>
+        /// User who wrote the review
+        /// </summary>
         [ForeignKey(nameof(UserId))]
+        [Comment("User Identifier")]
         public ApplicationUser User { get; set; } = null!;
 
         /// <summary>

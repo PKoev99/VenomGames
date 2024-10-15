@@ -11,6 +11,9 @@ namespace VenomGames.Infrastructure.Data.Models
     /// </summary>
     public class Game
     {
+        /// <summary>
+        /// Unique game Identifier.
+        /// </summary>
         [Key]
         [Comment("Game Identifier")]
         public int GameId { get; set; }
@@ -57,5 +60,11 @@ namespace VenomGames.Infrastructure.Data.Models
         /// </summary>
         [Comment("Game review collection")]
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        /// <summary>
+        /// Game order collection
+        /// </summary>
+        [Comment("Game review collection")]
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
