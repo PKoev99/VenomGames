@@ -1,4 +1,5 @@
-﻿using VenomGames.Infrastructure.Data.Models;
+﻿using VenomGames.Core.DTOs.Game;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Contracts
 {
@@ -12,31 +13,31 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all games.
         /// </summary>
         /// <returns>List of all games.</returns>
-        IEnumerable<Game> GetAllGames();
+        Task<IEnumerable<Game>> GetAllGamesAsync();
 
         /// <summary>
         /// Retrieves a game by its ID.
         /// </summary>
         /// <param name="id">The ID of the game.</param>
         /// <returns>A single game.</returns>
-        Game GetGameById(int id);
+        Task<Game> GetGameByIdAsync(int id);
 
         /// <summary>
         /// Adds a new game to the database.
         /// </summary>
         /// <param name="game">Game to be added.</param>
-        void CreateGame(Game game);
+        Task AddGameAsync(Game game);
 
         /// <summary>
         /// Updates an existing game.
         /// </summary>
         /// <param name="game">Game with updated information.</param>
-        void UpdateGame(Game game);
+        Task UpdateGameAsync(Game game);
 
         /// <summary>
         /// Deletes a game by its ID.
         /// </summary>
         /// <param name="id">ID of the game to be deleted.</param>
-        void DeleteGame(int id);
+        Task DeleteGameAsync(int id);
     }
 }

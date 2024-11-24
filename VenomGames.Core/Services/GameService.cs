@@ -1,4 +1,5 @@
 ﻿using VenomGames.Core.Contracts;
+using VenomGames.Core.DTOs.Game;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
@@ -12,47 +13,47 @@ namespace VenomGames.Core.Services
 
         public GameService(IRepository<Game> _gameRepository)
         {
-                gameRepository = _gameRepository;
+            gameRepository = _gameRepository;
         }
 
         /// <summary>
         /// Retrieves all games from the repository.
         /// </summary>
-        public IEnumerable<Game> GetAllGames()
+        public async Task<IEnumerable<Game>> GetAllGamesAsync()
         {
-            return gameRepository.GetAll();
+            return await gameRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Retrieves a specific game by ID.
         /// </summary>
-        public Game GetGameById(int id)
+        public async Task<Game> GetGameByIdAsync(int id)
         {
-            return gameRepository.GetById(id);
+            return await gameRepository.GetByIdAsync(id);
         }
 
         /// <summary>
         /// Adds a new game to the repository.
         /// </summary>
-        public void CreateGame(Game game)
+        public async Task AddGameAsync(Game game)
         {
-            gameRepository.Add(game);
+            await gameRepository.AddAsync(game);
         }
 
         /// <summary>
         /// Updates an existing game.
         /// </summary>
-        public void UpdateGame(Game game)
+        async Task IGameService.UpdateGameAsync(Game game)
         {
-            gameRepository.Update(game);
+            await gameRepository.UpdateAsync(game);
         }
 
         /// <summary>
         /// Deletes a game by ID.
         /// </summary>
-        public void DeleteGame(int id)
+        async Task IGameService.DeleteGameAsync(int id)
         {
-            gameRepository.Delete(id);
+            await gameRepository.DeleteAsync(id);
         }
     }
 }
