@@ -18,41 +18,41 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Retrieves all categories from the repository.
         /// </summary>
-        public IEnumerable<Category> GetAllCategories()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return categoryRepository.GetAll();
+            return await categoryRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Retrieves a specific category by ID.
         /// </summary>
-        public Category GetCategoryById(int id)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            return categoryRepository.GetById(id);
+            return await categoryRepository.GetByIdAsync(id);
         }
 
         /// <summary>
         /// Adds a new category to the repository.
         /// </summary>
-        public void CreateCategory(Category category)
+        public async Task CreateCategoryAsync(Category category)
         {
-            categoryRepository.Add(category);
+            await categoryRepository.AddAsync(category);
         }
 
         /// <summary>
         /// Updates an existing category.
         /// </summary>
-        public void UpdateCategory(Category category)
+        public async Task UpdateCategoryAsync (Category category)
         {
-            categoryRepository.Update(category);
+            await categoryRepository.UpdateAsync(category);
         }
 
         /// <summary>
         /// Deletes a category by ID.
         /// </summary>
-        public void DeleteCategory(int id)
+        public async Task DeleteCategoryAsync(int id)
         {
-            categoryRepository.Delete(id);
+            await categoryRepository.DeleteAsync(id);
         }
     }
 }
