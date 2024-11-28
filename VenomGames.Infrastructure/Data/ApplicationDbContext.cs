@@ -28,6 +28,12 @@ namespace VenomGames.Infrastructure.Data
                 .HasForeignKey(g => g.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Category>()
+                .HasMany(c=>c.Games)
+                .WithOne()
+                .HasForeignKey(g => g.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Review>()
                 .HasOne(r => r.Game)
                 .WithMany(g => g.Reviews)
