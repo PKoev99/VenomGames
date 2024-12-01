@@ -9,35 +9,41 @@ namespace VenomGames.Core.Contracts
     public interface IReviewService
     {
         /// <summary>
+        /// Retrieves all reviews.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<Review>> GetAllReviewsAsync();
+
+        /// <summary>
         /// Retrieves all reviews for a specific game.
         /// </summary>
         /// <param name="gameId">The ID of the game.</param>
         /// <returns>List of reviews for the game.</returns>
-        IEnumerable<Review> GetReviewsByGameId(int gameId);
+        Task<IEnumerable<Review>> GetReviewsByGameIdAsync(int gameId);
 
         /// <summary>
         /// Retrieves a review by its ID.
         /// </summary>
         /// <param name="id">The ID of the review.</param>
         /// <returns>A single review.</returns>
-        Review GetReviewById(int id);
+        Task<Review> GetReviewByIdAsync(int id);
 
         /// <summary>
         /// Adds a new review to the database.
         /// </summary>
         /// <param name="review">Review to be added.</param>
-        void CreateReview(Review review);
+        Task CreateReviewAsync(Review review);
 
         /// <summary>
         /// Updates an existing review.
         /// </summary>
         /// <param name="review">Review with updated information.</param>
-        void UpdateReview(Review review);
+        Task UpdateReviewAsync(Review review);
 
         /// <summary>
         /// Deletes a review by its ID.
         /// </summary>
         /// <param name="id">ID of the review to be deleted.</param>
-        void DeleteReview(int id);
+        Task DeleteReviewAsync(int id);
     }
 }

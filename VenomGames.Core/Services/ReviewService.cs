@@ -8,51 +8,58 @@ namespace VenomGames.Core.Services
     /// </summary>
     public class ReviewService : IReviewService
     {
-        private readonly IRepository<Review> reviewRepository;
+        private readonly IReviewRepository reviewRepository;
 
-        public ReviewService(IRepository<Review> _reviewRepository)
+        public ReviewService(IReviewRepository _reviewRepository)
         {
             reviewRepository = _reviewRepository;
+        }
+
+        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
+        {
+            return await reviewRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Retrieves all reviews for a specific game.
         /// </summary>
-        public IEnumerable<Review> GetReviewsByGameId(int gameId)
+        public async Task<IEnumerable<Review>> GetReviewsByGameIdAsync(int gameId)
         {
-            return reviewRepository.GetAll().Where(r => r.GameId == gameId);
+            return await reviewRepository.GetReviewsByGameIdAsync(gameId);  
         }
 
         /// <summary>
         /// Retrieves a review by ID.
         /// </summary>
-        public Review GetReviewById(int id)
+        public async Task<Review> GetReviewByIdAsync(int id)
         {
-            return reviewRepository.GetById(id);
+            return await reviewRepository.GetByIdAsync(id);
         }
 
         /// <summary>
         /// Adds a new review to the repository.
         /// </summary>
-        public void CreateReview(Review review)
+        public async Task CreateReviewAsync(Review review)
         {
-            reviewRepository.Add(review);
+            await reviewRepository.AddAsync(review);
         }
 
         /// <summary>
         /// Updates an existing review.
         /// </summary>
-        public void UpdateReview(Review review)
+        public async Task UpdateReviewAsync(Review review)
         {
-            reviewRepository.Update(review);
+            await reviewRepository.UpdateAsync(review);
         }
 
         /// <summary>
         /// Deletes a review by ID.
         /// </summary>
-        public void DeleteReview(int id)
+        public async Task DeleteReviewAsync(int id)
         {
-            reviewRepository.Delete(id);
+            await reviewRepository.DeleteAsync(id);
         }
+
+       
     }
 }
