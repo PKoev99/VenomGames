@@ -12,38 +12,38 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all orders placed by users.
         /// </summary>
         /// <returns>List of all orders.</returns>
-        IEnumerable<Order> GetAllOrders();
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
 
         /// <summary>
         /// Retrieves all orders placed by a specific user.
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <returns>List of orders placed by the user.</returns>
-        IEnumerable<Order> GetOrdersByUserId(string userId);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
 
         /// <summary>
         /// Retrieves an order by its ID.
         /// </summary>
         /// <param name="id">The ID of the order.</param>
         /// <returns>A single order.</returns>
-        Order GetOrderById(int id);
+        Task<Order> GetOrderByIdAsync(int id);
 
         /// <summary>
         /// Adds a new order to the database.
         /// </summary>
         /// <param name="order">Order to be added.</param>
-        void CreateOrder(Order order);
+        Task CreateOrderAsync(Order order);
 
         /// <summary>
         /// Updates an existing order.
         /// </summary>
         /// <param name="order">Order with updated information.</param>
-        void UpdateOrder(Order order);
+        Task UpdateOrderAsync(Order order);
 
         /// <summary>
         /// Deletes an order by its ID.
         /// </summary>
         /// <param name="id">ID of the order to be deleted.</param>
-        void DeleteOrder(int id);
+        Task DeleteOrderAsync(int id);
     }
 }

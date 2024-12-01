@@ -32,6 +32,13 @@ namespace VenomGames.Infrastructure.Data.Models
         public ApplicationUser User { get; set; } = null!;
 
         /// <summary>
+        /// Total price of the order.
+        /// </summary>
+        [Required]
+        [Comment("Order price")]
+        public decimal TotalPrice { get; set; }
+
+        /// <summary>
         /// Id of ordered game.
         /// </summary>
         [Comment("Order user")]

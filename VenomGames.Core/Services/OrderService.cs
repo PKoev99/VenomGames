@@ -18,49 +18,49 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Retrieves all orders from the repository.
         /// </summary>
-        public IEnumerable<Order> GetAllOrders()
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return orderRepository.GetAll();
+            return await orderRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Retrieves a specific order by ID.
         /// </summary>
-        public Order GetOrderById(int id)
+        public async Task<Order> GetOrderByIdAsync(int id)
         {
-            return orderRepository.GetById(id);
+            return await orderRepository.GetByIdAsync(id);
         }
 
         /// <summary>
         /// Retrieves all orders by User ID.
         /// </summary>
-        public IEnumerable<Order> GetOrdersByUserId(string userId)
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
         {
-            return orderRepository.GetAll().Where(o => o.UserId == userId);
+            return await orderRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Adds a new order to the repository.
         /// </summary>
-        public void CreateOrder(Order order)
+        public async Task CreateOrderAsync(Order order)
         {
-            orderRepository.Add(order);
+            await orderRepository.AddAsync(order);
         }
 
         /// <summary>
         /// Updates an existing order.
         /// </summary>
-        public void UpdateOrder(Order order)
+        public async Task UpdateOrderAsync(Order order)
         {
-            orderRepository.Update(order);
+            await orderRepository.UpdateAsync(order);
         }
 
         /// <summary>
         /// Deletes an order by ID.
         /// </summary>
-        public void DeleteOrder(int id)
+        public async Task DeleteOrderAsync(int id)
         {
-            orderRepository.Delete(id);
+            await orderRepository.DeleteAsync(id);
         }
     }
 }
