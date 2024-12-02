@@ -21,25 +21,25 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Retrieves all users.
         /// </summary>
-        public IEnumerable<ApplicationUser> GetAllUsers()
+        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
-            return userRepository.GetAll();
+            return await userRepository.GetAllAsync();
         }
 
         /// <summary>
         /// Retrieves a user by email.
         /// </summary>
-        public ApplicationUser GetUserByEmail(string email)
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
         {
-            return userRepository.GetAll().FirstOrDefault(u => u.Email == email);
+            return await userManager.FindByEmailAsync(email);
         }
 
         /// <summary>
         /// Retrieves a user by ID.
         /// </summary>
-        public ApplicationUser GetUserById(int id)
+        public async Task<ApplicationUser> GetUserByIdAsync(string id)
         {
-            return userRepository.GetById(id);
+            return await userManager.FindByIdAsync(id);
         }
 
         /// <summary>
@@ -61,17 +61,17 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Updates an existing user's information.
         /// </summary>
-        public void UpdateUser(ApplicationUser user)
+        public async Task UpdateUserAsync(ApplicationUser user)
         {
-            userRepository.Update(user);
+            await userRepository.UpdateAsync(user);
         }
 
         /// <summary>
         /// Deletes a user by ID.
         /// </summary>
-        public void DeleteUser(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            userRepository.Delete(id);
+            await userRepository.DeleteAsync(id);
         }
     }
 }
