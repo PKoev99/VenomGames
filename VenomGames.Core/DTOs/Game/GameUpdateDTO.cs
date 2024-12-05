@@ -1,10 +1,8 @@
-﻿namespace VenomGames.Core.DTOs.Game
+﻿using VenomGames.Core.DTOs.Game.Common;
+
+namespace VenomGames.Core.DTOs.Game;
+
+public class GameUpdateDTO : GameModel
 {
-    public class GameUpdateDTO
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int CategoryId { get; set; }
-    }
+    public int Id { get; set; }
 }
