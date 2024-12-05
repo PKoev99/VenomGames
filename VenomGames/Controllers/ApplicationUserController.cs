@@ -74,7 +74,7 @@ namespace VenomGames.Controllers
         // POST: /Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             await _userService.DeleteUserAsync(id);
             return RedirectToAction(nameof(Index));

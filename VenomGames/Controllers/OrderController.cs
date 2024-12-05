@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
+using VenomGames.Core.DTOs.Order;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
@@ -14,16 +15,16 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(GetOrdersQuery query)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
+            var orders = await _orderService.GetOrdersAsync(query);
             return View(orders);
         }
 
         // GET: /Orders/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -40,7 +41,7 @@ namespace VenomGames.Controllers
         // POST: /Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order)
+        public async Task<IActionResult> Create(OrderCreateDTO order)
         {
             if (ModelState.IsValid)
             {
@@ -53,7 +54,7 @@ namespace VenomGames.Controllers
         // GET: /Orders/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -64,11 +65,11 @@ namespace VenomGames.Controllers
         // POST: /Orders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Order order)
+        public async Task<IActionResult> Edit(int id, OrderUpdateDTO order)
         {
-            if (id != order.OrderId)
+            if (id != order.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             if (ModelState.IsValid)
@@ -82,7 +83,7 @@ namespace VenomGames.Controllers
         // GET: /Orders/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
