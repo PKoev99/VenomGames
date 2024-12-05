@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
+using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
@@ -10,12 +13,12 @@ namespace VenomGames.Core.Services
     public class ApplicationUserService : IApplicationUserService
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IRepository<ApplicationUser> userRepository;
+        private readonly ApplicationDbContext context;
 
-        public ApplicationUserService(UserManager<ApplicationUser> _userManager, IRepository<ApplicationUser> _userRepository)
+        public ApplicationUserService(UserManager<ApplicationUser> _userManager, ApplicationDbContext _context)
         {
             userManager = _userManager;
-            userRepository = _userRepository;
+            context = _context;
         }
 
         /// <summary>
@@ -23,23 +26,37 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
         {
-            return await userRepository.GetAllAsync();
+            IEnumerable<ApplicationUser> users = await userManager.Users.ToListAsync();
+
+            return users;
         }
 
         /// <summary>
         /// Retrieves a user by email.
         /// </summary>
-        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        public async Task<ApplicationUser?> GetUserByEmailAsync(string email)
         {
-            return await userManager.FindByEmailAsync(email);
+            ApplicationUser? user = await userManager.FindByEmailAsync(email);
+            if (user == null) 
+            {
+                throw new NotFoundException(nameof(ApplicationUser),email);
+            }
+            
+            return user;
         }
 
         /// <summary>
         /// Retrieves a user by ID.
         /// </summary>
-        public async Task<ApplicationUser> GetUserByIdAsync(string id)
+        public async Task<ApplicationUser?> GetUserByIdAsync(string id)
         {
-            return await userManager.FindByIdAsync(id);
+            ApplicationUser? user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(ApplicationUser), id);
+            }
+
+            return user;
         }
 
         /// <summary>
@@ -63,15 +80,21 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task UpdateUserAsync(ApplicationUser user)
         {
-            await userRepository.UpdateAsync(user);
+            await userManager.UpdateAsync(user);
         }
 
         /// <summary>
         /// Deletes a user by ID.
         /// </summary>
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(string id)
         {
-            await userRepository.DeleteAsync(id);
+            ApplicationUser? user = await userManager.FindByIdAsync(id);
+            if (user == null) 
+            {
+                throw new NotFoundException(nameof(ApplicationUser), id);
+            }
+
+            await userManager.DeleteAsync(user);
         }
     }
 }

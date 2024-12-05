@@ -14,7 +14,6 @@ namespace VenomGames.Infrastructure.Data.Models
         /// <summary>
         /// Unique review identifier.
         /// </summary>
-        [Key]
         [Comment("Review Identifier")]
         public int ReviewId { get; set; }
 
@@ -27,7 +26,6 @@ namespace VenomGames.Infrastructure.Data.Models
         /// <summary>
         /// Game associated with the review
         /// </summary>
-        [ForeignKey(nameof(GameId))]
         [Comment("Reviewed game")]
         public Game Game { get; set; } = null!;
 
@@ -35,34 +33,29 @@ namespace VenomGames.Infrastructure.Data.Models
         /// User identifier for reviewer.
         /// </summary>
         [Comment("User Identifier")]
-        public string UserId { get; set; } = string.Empty;
+        public string UserId { get; set; } = null!;
 
         /// <summary>
         /// User who wrote the review
         /// </summary>
-        [ForeignKey(nameof(UserId))]
         [Comment("User Identifier")]
         public ApplicationUser User { get; set; } = null!;
 
         /// <summary>
         /// Content of the review.
         /// </summary>
-        [Required]
-        [StringLength(ReviewContentMaxLength, ErrorMessage = ReviewContentLengthError)]
         [Comment("Review content")]
-        public string Content { get; set; } = string.Empty;
+        public string? Content { get; set; }
 
         /// <summary>
         /// Rating given by the user from 1-5.
         /// </summary>
-        [Range(ReviewMinimumRating, ReviewMaximumRating)]
-        public int Rating { get; set; }
+        public decimal Rating { get; set; }
 
         /// <summary>
         /// Date of review creation
         /// </summary>
-        [Required]
-        [Comment("Reveiw date")]
+        [Comment("Review date")]
         public DateTime CreatedAt { get; set; }
 
     }

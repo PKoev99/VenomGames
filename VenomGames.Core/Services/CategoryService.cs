@@ -1,4 +1,9 @@
-﻿using VenomGames.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using VenomGames.Core.Common.Exceptions;
+using VenomGames.Core.Contracts;
+using VenomGames.Core.DTOs.Category;
+using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
@@ -8,43 +13,86 @@ namespace VenomGames.Core.Services
     /// </summary>
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository<Category> categoryRepository;
+        private readonly ApplicationDbContext context;
 
-        public CategoryService(IRepository<Category> _categoryRepository)
+        public CategoryService(ApplicationDbContext _context)
         {
-            categoryRepository = _categoryRepository;
+            context = _context;
         }
 
         /// <summary>
-        /// Retrieves all categories from the repository.
+        /// Searches for categories from the database.
         /// </summary>
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryOutputModel>> GetCategoryAsync(GetCategoryQuery query)
         {
-            return await categoryRepository.GetAllAsync();
+            IQueryable<Category> categories = context.Categories;
+
+            string? categoryTitle = query.Name;
+            if (!categoryTitle.IsNullOrEmpty())
+            {
+                categories = categories.Where(g => g.Name.Contains(categoryTitle!));
+            }
+
+            
+
+            IEnumerable<CategoryOutputModel> categoryOutput = await categories
+                .Select(c => new CategoryOutputModel
+                {
+                   Id = c.CategoryId,
+                   Name = c.Name
+                }).ToListAsync();
+
+            return categoryOutput;
+
         }
 
         /// <summary>
-        /// Retrieves a specific category by ID.
+        /// Retrieves details about a specific category by ID.
         /// </summary>
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<CategoryOutputModel> GetCategoryDetailsAsync(int id)
         {
-            return await categoryRepository.GetByIdAsync(id);
+            CategoryOutputModel? category = await context.Categories
+                .Where(c => c.CategoryId == id)
+                .Select(g => new CategoryOutputModel
+                {
+                   Id = g.CategoryId,
+                   Name = g.Name
+                }).FirstOrDefaultAsync();
+
+            if (category == null)
+            {
+                throw new NotFoundException(nameof(Category), id);
+            }
+
+            return category;
         }
 
         /// <summary>
-        /// Adds a new category to the repository.
+        /// Adds a new category to the database.
         /// </summary>
-        public async Task CreateCategoryAsync(Category category)
+        public async Task CreateCategoryAsync(CategoryCreateDTO category)
         {
-            await categoryRepository.AddAsync(category);
+            Category newCategory = new Category()
+            {
+                Name = category.Name
+            };
+
+            context.Categories.Add(newCategory);
+            await context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Updates an existing category.
         /// </summary>
-        public async Task UpdateCategoryAsync (Category category)
+        public async Task UpdateCategoryAsync(CategoryUpdateDTO category)
         {
-            await categoryRepository.UpdateAsync(category);
+            Category newCategory = new Category()
+            {
+                Name = category.Name
+            };
+
+            context.Categories.Update(newCategory);
+            await context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -52,7 +100,15 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task DeleteCategoryAsync(int id)
         {
-            await categoryRepository.DeleteAsync(id);
+            Category? category = await context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+
+            if (category == null)
+            {
+                throw new NotFoundException(nameof(Category), id);
+            }
+
+            context.Categories.Remove(category);
+            await context.SaveChangesAsync();
         }
     }
 }

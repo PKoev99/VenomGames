@@ -1,4 +1,5 @@
-﻿using VenomGames.Infrastructure.Data.Models;
+﻿using VenomGames.Core.DTOs.Category;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Contracts
 {
@@ -12,26 +13,26 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all categories.
         /// </summary>
         /// <returns>List of all categories.</returns>
-        Task<IEnumerable<Category>> GetAllCategoriesAsync();
+        Task<IEnumerable<CategoryOutputModel>> GetCategoryAsync(GetCategoryQuery query);
 
         /// <summary>
         /// Retrieves a category by its ID.
         /// </summary>
         /// <param name="id">The ID of the category.</param>
         /// <returns>A single category.</returns>
-        Task<Category> GetCategoryByIdAsync(int id);
+        Task<CategoryOutputModel> GetCategoryDetailsAsync(int id);
 
         /// <summary>
         /// Adds a new category to the database.
         /// </summary>
         /// <param name="category">Category to be added.</param>
-        Task CreateCategoryAsync(Category category);
+        Task CreateCategoryAsync(CategoryCreateDTO category);
 
         /// <summary>
         /// Updates an existing category.
         /// </summary>
         /// <param name="category">Category with updated information.</param>
-        Task UpdateCategoryAsync(Category category);
+        Task UpdateCategoryAsync(CategoryUpdateDTO category);
 
         /// <summary>
         /// Deletes a category by its ID.

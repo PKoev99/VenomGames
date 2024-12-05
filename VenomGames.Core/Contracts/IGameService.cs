@@ -1,5 +1,4 @@
 ﻿using VenomGames.Core.DTOs.Game;
-using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Contracts
 {
@@ -10,29 +9,29 @@ namespace VenomGames.Core.Contracts
     public interface IGameService
     {
         /// <summary>
-        /// Retrieves all games.
+        /// Searches for games from the database.
         /// </summary>
         /// <returns>List of all games.</returns>
-        Task<IEnumerable<Game>> GetAllGamesAsync();
+        Task<IEnumerable<GameOutputModel>> GetGamesAsync(GetGamesQuery queery);
 
         /// <summary>
-        /// Retrieves a game by its ID.
+        /// Retrieves details about a specific game by ID.
         /// </summary>
         /// <param name="id">The ID of the game.</param>
         /// <returns>A single game.</returns>
-        Task<Game> GetGameByIdAsync(int id);
+        Task<GameOutputModel> GetGameDetailsAsync(int id);
 
         /// <summary>
         /// Adds a new game to the database.
         /// </summary>
         /// <param name="game">Game to be added.</param>
-        Task AddGameAsync(Game game);
+        Task CreateGameAsync(GameCreateDTO game);
 
         /// <summary>
         /// Updates an existing game.
         /// </summary>
         /// <param name="game">Game with updated information.</param>
-        Task UpdateGameAsync(Game game);
+        Task UpdateGameAsync(GameUpdateDTO game);
 
         /// <summary>
         /// Deletes a game by its ID.

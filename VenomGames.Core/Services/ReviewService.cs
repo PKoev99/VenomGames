@@ -1,4 +1,9 @@
-﻿using VenomGames.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using VenomGames.Core.Common.Exceptions;
+using VenomGames.Core.Contracts;
+using VenomGames.Core.DTOs.Review;
+using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
@@ -8,48 +13,141 @@ namespace VenomGames.Core.Services
     /// </summary>
     public class ReviewService : IReviewService
     {
-        private readonly IReviewRepository reviewRepository;
+        private readonly ApplicationDbContext context;
 
-        public ReviewService(IReviewRepository _reviewRepository)
+        public ReviewService(ApplicationDbContext _context)
         {
-            reviewRepository = _reviewRepository;
-        }
-
-        public async Task<IEnumerable<Review>> GetAllReviewsAsync()
-        {
-            return await reviewRepository.GetAllAsync();
+            context = _context;
         }
 
         /// <summary>
-        /// Retrieves all reviews for a specific game.
+        /// Searches for reviews from the database.
         /// </summary>
-        public async Task<IEnumerable<Review>> GetReviewsByGameIdAsync(int gameId)
+        public async Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync(GetReviewsQuery query)
         {
-            return await reviewRepository.GetReviewsByGameIdAsync(gameId);  
+            IQueryable<Review> reviews = context.Reviews;
+
+            int? gameId = query.GameId;
+            if (gameId.HasValue)
+            {
+                reviews = reviews.Where(r => r.GameId == gameId);
+            }
+
+            string? userId = query.UserId;
+            if (!userId.IsNullOrEmpty())
+            {
+                reviews = reviews.Where(r => r.UserId == userId);
+            }
+
+
+            decimal? rating = query.Rating;
+            if (rating.HasValue)
+            {
+                reviews = reviews.Where(r => r.Rating == rating);
+            }
+
+            DateTime? startDate = query.StartDate;
+            DateTime? endDate = query.EndDate;
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                reviews = reviews.Where(o => o.CreatedAt >= startDate.Value.Date && o.CreatedAt <= endDate.Value.Date);
+            }
+
+            IEnumerable<ReviewOutputModel> reviewsOutput = await reviews
+                .Select(r => new ReviewOutputModel
+                {
+                    GameId = r.GameId,
+                    UserId = r.UserId,
+                    Rating = r.Rating,
+                    Content = r.Content,
+                    CreatedAt = r.CreatedAt
+                }).ToListAsync();
+
+            return reviewsOutput;
+
         }
 
         /// <summary>
-        /// Retrieves a review by ID.
+        /// Get all reviews for a specific game by its ID.
         /// </summary>
-        public async Task<Review> GetReviewByIdAsync(int id)
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<IEnumerable<ReviewOutputModel>> GetReviewsByGameIdAsync(int gameId)
         {
-            return await reviewRepository.GetByIdAsync(id);
+            IEnumerable<ReviewOutputModel> reviewsOutput = await context.Reviews
+                .Where(r => r.GameId == gameId)
+                .Select(r => new ReviewOutputModel
+                {
+                    GameId = r.GameId,
+                    UserId = r.UserId,
+                    Rating = r.Rating,
+                    Content = r.Content,
+                    CreatedAt = r.CreatedAt
+                }).ToListAsync();
+
+            return reviewsOutput;
+
         }
 
         /// <summary>
-        /// Adds a new review to the repository.
+        /// Retrieves details about a specific review by ID.
         /// </summary>
-        public async Task CreateReviewAsync(Review review)
+        public async Task<ReviewOutputModel> GetReviewDetailsAsync(int id)
         {
-            await reviewRepository.AddAsync(review);
+            ReviewOutputModel? review = await context.Reviews
+                .Where(r => r.ReviewId == id)
+                .Select(r => new ReviewOutputModel
+                {
+                    GameId = r.GameId,
+                    UserId = r.UserId,
+                    Rating = r.Rating,
+                    Content = r.Content,
+                    CreatedAt = r.CreatedAt
+                }).FirstOrDefaultAsync();
+
+            if (review == null)
+            {
+                throw new NotFoundException(nameof(Review), id);
+            }
+
+            return review;
+        }
+
+        /// <summary>
+        /// Adds a new review to the database.
+        /// </summary>
+        public async Task CreateReviewAsync(ReviewCreateDTO review)
+        {
+            Review newReview = new Review()
+            {
+                GameId = review.GameId,
+                Rating = review.Rating,
+                Content = review.Content,
+                CreatedAt = review.CreatedAt,
+                UserId = review.UserId
+            };
+
+            context.Reviews.Add(newReview);
+            await context.SaveChangesAsync();
         }
 
         /// <summary>
         /// Updates an existing review.
         /// </summary>
-        public async Task UpdateReviewAsync(Review review)
+        public async Task UpdateReviewAsync(ReviewUpdateDTO review)
         {
-            await reviewRepository.UpdateAsync(review);
+            Review newOrder = new Review()
+            {
+                GameId = review.GameId,
+                Rating = review.Rating,
+                Content = review.Content,
+                CreatedAt = review.CreatedAt,
+                UserId = review.UserId
+            };
+
+            context.Reviews.Update(newOrder);
+            await context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -57,9 +155,15 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task DeleteReviewAsync(int id)
         {
-            await reviewRepository.DeleteAsync(id);
-        }
+            Review? review = await context.Reviews.FirstOrDefaultAsync(o => o.ReviewId == id);
 
-       
+            if (review == null)
+            {
+                throw new NotFoundException(nameof(Review), id);
+            }
+
+            context.Reviews.Remove(review);
+            await context.SaveChangesAsync();
+        }
     }
 }

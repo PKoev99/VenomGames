@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
-using static VenomGames.Infrastructure.Constants.DataConstants;
-using static VenomGames.Infrastructure.Constants.ErrorMessages;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VenomGames.Infrastructure.Data.Models
 {
@@ -14,9 +12,8 @@ namespace VenomGames.Infrastructure.Data.Models
         /// <summary>
         /// Unique order identifier.
         /// </summary>
-        [Key]
         [Comment("Order identifier")]
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Unique identifier for the user who placed the order
@@ -27,34 +24,24 @@ namespace VenomGames.Infrastructure.Data.Models
         /// <summary>
         /// User who placed the order.
         /// </summary>
-        [ForeignKey(nameof(UserId))]
         [Comment("Order user")]
         public ApplicationUser User { get; set; } = null!;
 
         /// <summary>
         /// Total price of the order.
         /// </summary>
-        [Required]
         [Comment("Order price")]
         public decimal TotalPrice { get; set; }
 
         /// <summary>
-        /// Id of ordered game.
+        /// Ordered games
         /// </summary>
-        [Comment("Order user")]
-        public int GameId { get; set; }
-
-        /// <summary>
-        /// Ordered game
-        /// </summary>
-        [ForeignKey(nameof(GameId))]
-        [Comment("Order game")]
-        public Game Game { get; set; } = null!;
+        [Comment("Order games")]
+        public ICollection<GameOrder> GameOrders { get; set; } = new List<GameOrder>();
 
         /// <summary>
         /// Date when the order was placed.
         /// </summary>
-        [Required]
         [Comment("Order date")]
         public DateTime OrderDate { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using VenomGames.Infrastructure.Data.Models;
+﻿using VenomGames.Core.DTOs.Review;
 
 namespace VenomGames.Core.Contracts
 {
@@ -12,33 +12,33 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all reviews.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Review>> GetAllReviewsAsync();
+        Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync(GetReviewsQuery query);
 
         /// <summary>
         /// Retrieves all reviews for a specific game.
         /// </summary>
         /// <param name="gameId">The ID of the game.</param>
         /// <returns>List of reviews for the game.</returns>
-        Task<IEnumerable<Review>> GetReviewsByGameIdAsync(int gameId);
+        Task<IEnumerable<ReviewOutputModel>> GetReviewsByGameIdAsync(int gameId);
 
         /// <summary>
         /// Retrieves a review by its ID.
         /// </summary>
         /// <param name="id">The ID of the review.</param>
         /// <returns>A single review.</returns>
-        Task<Review> GetReviewByIdAsync(int id);
+        Task<ReviewOutputModel> GetReviewDetailsAsync(int id);
 
         /// <summary>
         /// Adds a new review to the database.
         /// </summary>
         /// <param name="review">Review to be added.</param>
-        Task CreateReviewAsync(Review review);
+        Task CreateReviewAsync(ReviewCreateDTO review);
 
         /// <summary>
         /// Updates an existing review.
         /// </summary>
         /// <param name="review">Review with updated information.</param>
-        Task UpdateReviewAsync(Review review);
+        Task UpdateReviewAsync(ReviewUpdateDTO review);
 
         /// <summary>
         /// Deletes a review by its ID.

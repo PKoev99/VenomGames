@@ -1,4 +1,5 @@
-﻿using VenomGames.Infrastructure.Data.Models;
+﻿using VenomGames.Core.DTOs.Order;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Contracts
 {
@@ -12,33 +13,33 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all orders placed by users.
         /// </summary>
         /// <returns>List of all orders.</returns>
-        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<IEnumerable<OrderOutputModel>> GetOrdersAsync(GetOrdersQuery queery);
 
         /// <summary>
         /// Retrieves all orders placed by a specific user.
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <returns>List of orders placed by the user.</returns>
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
+        Task<IEnumerable<OrderOutputModel>> GetOrdersByUserIdAsync(string userId);
 
         /// <summary>
         /// Retrieves an order by its ID.
         /// </summary>
         /// <param name="id">The ID of the order.</param>
         /// <returns>A single order.</returns>
-        Task<Order> GetOrderByIdAsync(int id);
+        Task<OrderOutputModel> GetOrderDetailsAsync(int id);
 
         /// <summary>
         /// Adds a new order to the database.
         /// </summary>
         /// <param name="order">Order to be added.</param>
-        Task CreateOrderAsync(Order order);
+        Task CreateOrderAsync(OrderCreateDTO order);
 
         /// <summary>
         /// Updates an existing order.
         /// </summary>
         /// <param name="order">Order with updated information.</param>
-        Task UpdateOrderAsync(Order order);
+        Task UpdateOrderAsync(OrderUpdateDTO order);
 
         /// <summary>
         /// Deletes an order by its ID.
