@@ -11,10 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Category\" />
     <Folder Include="DTOs\User\" />
-    <Folder Include="DTOs\Review\" />
-    <Folder Include="DTOs\Order\" />
   </ItemGroup>
 
 </Project>
