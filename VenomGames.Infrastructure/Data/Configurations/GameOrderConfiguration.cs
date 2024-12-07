@@ -12,15 +12,15 @@ namespace VenomGames.Infrastructure.Data.Configurations
 
             builder.HasOne(go => go.Game)
                 .WithMany(o => o.GameOrders)
-                .HasForeignKey(go => go.OrderId);
-
-            builder.HasIndex(go => go.OrderId);
-
-            builder.HasOne(go => go.Game)
-                .WithMany(g => g.GameOrders)
                 .HasForeignKey(go => go.GameId);
 
             builder.HasIndex(go => go.GameId);
+
+            builder.HasOne(go => go.Order)
+                .WithMany(g => g.GameOrders)
+                .HasForeignKey(go => go.OrderId);
+
+            builder.HasIndex(go => go.OrderId);
         }
     }
 }

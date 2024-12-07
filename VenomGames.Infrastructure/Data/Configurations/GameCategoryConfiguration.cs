@@ -8,19 +8,19 @@ namespace VenomGames.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<GameCategory> builder)
         {
-            builder.HasKey(go => new { go.CategoryId, go.GameId });
+            builder.HasKey(gc => new { gc.CategoryId, gc.GameId });
 
             builder.HasOne(gc => gc.Game)
                 .WithMany(g => g.GameCategories)
-                .HasForeignKey(go => go.CategoryId);
+                .HasForeignKey(gc => gc.GameId);
 
-            builder.HasIndex(go => go.CategoryId);
+            builder.HasIndex(gc => gc.GameId);
 
-            builder.HasOne(gc => gc.Game)
-                .WithMany(g => g.GameCategories)
-                .HasForeignKey(go => go.GameId);
+            builder.HasOne(gc => gc.Category)
+                .WithMany(c => c.GameCategories)
+                .HasForeignKey(gc => gc.CategoryId);
 
-            builder.HasIndex(go => go.GameId);
+            builder.HasIndex(gc => gc.CategoryId);
         }
     }
 }
