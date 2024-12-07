@@ -7,24 +7,24 @@ namespace VenomGames.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly IOrderService _orderService;
+        private readonly IOrderService orderService;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService _orderService)
         {
-            _orderService = orderService;
+            orderService = _orderService;
         }
 
         // GET: /Orders
         public async Task<IActionResult> Index(GetOrdersQuery query)
         {
-            var orders = await _orderService.GetOrdersAsync(query);
+            IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersAsync(query);
             return View(orders);
         }
 
         // GET: /Orders/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _orderService.GetOrderDetailsAsync(id);
+            OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace VenomGames.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _orderService.CreateOrderAsync(order);
+                await orderService.CreateOrderAsync(order);
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
@@ -54,7 +54,7 @@ namespace VenomGames.Controllers
         // GET: /Orders/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var order = await _orderService.GetOrderDetailsAsync(id);
+            OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace VenomGames.Controllers
 
             if (ModelState.IsValid)
             {
-                await _orderService.UpdateOrderAsync(order);
+                await orderService.UpdateOrderAsync(order);
                 return RedirectToAction(nameof(Index));
             }
             return View(order);
@@ -83,7 +83,7 @@ namespace VenomGames.Controllers
         // GET: /Orders/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _orderService.GetOrderDetailsAsync(id);
+            OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace VenomGames.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _orderService.DeleteOrderAsync(id);
+            await orderService.DeleteOrderAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

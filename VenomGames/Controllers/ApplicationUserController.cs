@@ -16,14 +16,14 @@ namespace VenomGames.Controllers
         // GET: /Users
         public async Task<IActionResult> Index()
         {
-            var users = await _userService.GetAllUsersAsync();
+            IEnumerable<ApplicationUser> users = await _userService.GetAllUsersAsync();
             return View(users);
         }
 
         // GET: /Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            ApplicationUser? user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -34,7 +34,7 @@ namespace VenomGames.Controllers
         // GET: /Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            ApplicationUser? user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -63,7 +63,7 @@ namespace VenomGames.Controllers
         // GET: /Users/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            ApplicationUser? user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -83,7 +83,7 @@ namespace VenomGames.Controllers
         // GET: /Users/ByEmail
         public async Task<IActionResult> GetByEmail(string email)
         {
-            var user = await _userService.GetUserByEmailAsync(email);
+            ApplicationUser? user = await _userService.GetUserByEmailAsync(email);
             if (user == null)
             {
                 return NotFound();

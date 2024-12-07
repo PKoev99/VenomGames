@@ -7,24 +7,24 @@ namespace VenomGames.Controllers
 {
     public class GameController : Controller
     {
-        private readonly IGameService _gameService;
+        private readonly IGameService gameService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService _gameService)
         {
-            _gameService = gameService;
+            gameService = _gameService;
         }
 
         // GET: /Games
         public async Task<IActionResult> Index(GetGamesQuery query)
         {
-            var games = await _gameService.GetGamesAsync(query);
+            IEnumerable<GameOutputModel> games = await gameService.GetGamesAsync(query);
             return View(games);
         }
 
         // GET: /Games/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var game = await _gameService.GetGameDetailsAsync(id);
+            GameOutputModel? game = await gameService.GetGameDetailsAsync(id);
             if (game == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace VenomGames.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _gameService.CreateGameAsync(game);
+                await gameService.CreateGameAsync(game);
                 return RedirectToAction(nameof(Index));
             }
             return View(game);
@@ -54,7 +54,7 @@ namespace VenomGames.Controllers
         // GET: /Games/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var game = await _gameService.GetGameDetailsAsync(id);
+            GameOutputModel? game = await gameService.GetGameDetailsAsync(id);
             if (game == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace VenomGames.Controllers
 
             if (ModelState.IsValid)
             {
-                await _gameService.UpdateGameAsync(game);
+                await gameService.UpdateGameAsync(game);
                 return RedirectToAction(nameof(Index));
             }
             return View(game);
@@ -83,7 +83,7 @@ namespace VenomGames.Controllers
         // GET: /Games/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var game = await _gameService.GetGameDetailsAsync(id);
+            GameOutputModel? game = await gameService.GetGameDetailsAsync(id);
             if (game == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace VenomGames.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _gameService.DeleteGameAsync(id);
+            await gameService.DeleteGameAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

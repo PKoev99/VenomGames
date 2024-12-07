@@ -7,24 +7,24 @@ namespace VenomGames.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService _categoryService)
         {
-            _categoryService = categoryService;
+            categoryService = _categoryService;
         }
 
         // GET: /Category
         public async Task<IActionResult> Index(GetCategoryQuery query)
         {
-            var categories = await _categoryService.GetCategoryAsync(query);
+            IEnumerable<CategoryOutputModel> categories = await categoryService.GetCategoryAsync(query);
             return View(categories);
         }
 
         // GET: /Category/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var category = await _categoryService.GetCategoryDetailsAsync(id);
+            CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -45,7 +45,7 @@ namespace VenomGames.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _categoryService.CreateCategoryAsync(category);
+                await categoryService.CreateCategoryAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -54,7 +54,7 @@ namespace VenomGames.Controllers
         // GET: /Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await _categoryService.GetCategoryDetailsAsync(id);
+            CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -74,7 +74,7 @@ namespace VenomGames.Controllers
 
             if (ModelState.IsValid)
             {
-                await _categoryService.UpdateCategoryAsync(category);
+                await categoryService.UpdateCategoryAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -83,7 +83,7 @@ namespace VenomGames.Controllers
         // GET: /Category/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _categoryService.GetCategoryDetailsAsync(id);
+            CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace VenomGames.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _categoryService.DeleteCategoryAsync(id);
+            await categoryService.DeleteCategoryAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
