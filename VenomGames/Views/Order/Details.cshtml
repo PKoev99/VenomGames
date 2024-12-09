@@ -1,0 +1,34 @@
+﻿@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<p><strong>User:</strong> @Model.UserName</p>
+<p><strong>Order Date:</strong> @Model.OrderDate.ToShortDateString()</p>
+<p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
+
+<h3>Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Game</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.GameName</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Quantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

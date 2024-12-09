@@ -1,0 +1,20 @@
+﻿@model GameViewModel
+
+@{
+    ViewData["Title"] = "Delete Game";
+}
+
+<h1>Delete Game</h1>
+
+<div>
+    <h2>@Model.Title</h2>
+    <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+    <p><strong>Categories:</strong> @Model.Categories</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
