@@ -47,7 +47,8 @@ namespace VenomGames.Core.Services
                     Price = g.Price,
                     Title = g.Title,
                     GameCategories = g.GameCategories,
-                    Reviews = g.Reviews
+                    Reviews = g.Reviews,
+                    ImageUrl = g.ImageUrl
                 }).ToListAsync();
 
             return gamesOutput;
@@ -68,7 +69,8 @@ namespace VenomGames.Core.Services
                     Price = g.Price,
                     Title = g.Title,
                     GameCategories = g.GameCategories,
-                    Reviews= g.Reviews
+                    Reviews= g.Reviews,
+                    ImageUrl= g.ImageUrl
                 }).FirstOrDefaultAsync();
 
             if (game == null)
@@ -88,7 +90,8 @@ namespace VenomGames.Core.Services
             {
                 Title = game.Title,
                 Price = game.Price,
-                Description = game.Description
+                Description = game.Description,
+                ImageUrl = game.ImageUrl
             };
 
             context.Games.Add(newGame);
@@ -104,7 +107,8 @@ namespace VenomGames.Core.Services
             {
                 Title = game.Title,
                 Price = game.Price,
-                Description = game.Description
+                Description = game.Description,
+                ImageUrl = game.ImageUrl
             };
 
             context.Games.Update(newGame);
@@ -145,7 +149,8 @@ namespace VenomGames.Core.Services
                 Price = g.Price,
                 Description = g.Description,
                 GameCategories = g.GameCategories,
-                Reviews = g.Reviews
+                Reviews = g.Reviews,
+                ImageUrl= g.ImageUrl
             });
         }
     }

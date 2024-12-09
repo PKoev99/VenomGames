@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static VenomGames.Infrastructure.Constants.DataConstants;
-using static VenomGames.Infrastructure.Constants.ErrorMessages;
 
 namespace VenomGames.Infrastructure.Data.Models
 {
@@ -34,6 +30,11 @@ namespace VenomGames.Infrastructure.Data.Models
         /// </summary>
         [Comment("Game description")]
         public string? Description { get; set; }
+
+        /// <summary>
+        /// Game image.
+        /// </summary>
+        public string ImageUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// Category collectiong for the game.
