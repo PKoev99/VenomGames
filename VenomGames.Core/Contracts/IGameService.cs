@@ -22,6 +22,13 @@ namespace VenomGames.Core.Contracts
         Task<GameOutputModel> GetGameDetailsAsync(int id);
 
         /// <summary>
+        /// Retrieves the featured games by rating.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync();
+
+
+        /// <summary>
         /// Adds a new game to the database.
         /// </summary>
         /// <param name="game">Game to be added.</param>

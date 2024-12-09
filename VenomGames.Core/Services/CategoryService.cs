@@ -110,5 +110,21 @@ namespace VenomGames.Core.Services
             context.Categories.Remove(category);
             await context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Retrieves all categories.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<CategoryOutputModel>> GetAllCategoriesAsync()
+        {
+            IEnumerable<Category> categories = await context.Categories.ToListAsync();
+
+            return categories.Select(c => new CategoryOutputModel
+            {
+                Id = c.CategoryId,
+                Name = c.Name,
+                Games = c.GameCategories
+            });
+        }
     }
 }

@@ -126,5 +126,27 @@ namespace VenomGames.Core.Services
             context.Games.Remove(game);
             await context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Retrieves featured games by rating.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync()
+        {
+            IEnumerable<Game> games = await context.Games
+                .Where(g => g.Reviews.All(x=>x.Rating>3 && x.Rating<5))
+                .Take(5)
+                .ToListAsync();
+
+            return games.Select(g => new GameOutputModel
+            {
+                GameId = g.Id,
+                Title = g.Title,
+                Price = g.Price,
+                Description = g.Description,
+                GameCategories = g.GameCategories,
+                Reviews = g.Reviews
+            });
+        }
     }
 }

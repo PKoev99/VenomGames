@@ -1,5 +1,4 @@
 ﻿using VenomGames.Core.DTOs.Category;
-using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Contracts
 {
@@ -10,7 +9,7 @@ namespace VenomGames.Core.Contracts
     public interface ICategoryService
     {
         /// <summary>
-        /// Retrieves all categories.
+        /// Searches for a category from the database.
         /// </summary>
         /// <returns>List of all categories.</returns>
         Task<IEnumerable<CategoryOutputModel>> GetCategoryAsync(GetCategoryQuery query);
@@ -21,6 +20,13 @@ namespace VenomGames.Core.Contracts
         /// <param name="id">The ID of the category.</param>
         /// <returns>A single category.</returns>
         Task<CategoryOutputModel> GetCategoryDetailsAsync(int id);
+
+        /// <summary>
+        /// Retrieves all categories.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<CategoryOutputModel>> GetAllCategoriesAsync();
+
 
         /// <summary>
         /// Adds a new category to the database.
