@@ -5,9 +5,10 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="ApplicationUser" asp-action="Logout">Logout</a>
-        </li>
+        <form asp-controller="ApplicationUser" asp-action="Logout" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-link nav-link">Logout</button>
+        </form>
 }
 else
 {

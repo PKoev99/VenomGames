@@ -33,12 +33,6 @@ namespace VenomGames.Core.Services
                 games = games.Where(g => g.Title.Contains(gameTitle!));
             }
 
-            int? categoryId = query.CategoryId;
-            if (categoryId.HasValue)
-            {
-                games = games.Where(g => g.GameCategories.Any(c=>c.CategoryId==categoryId));
-            }
-
             IEnumerable<GameOutputModel> gamesOutput = await games
                 .Select(g => new GameOutputModel
                 {
@@ -75,7 +69,7 @@ namespace VenomGames.Core.Services
 
             if (game == null)
             {
-                throw new NotFoundException(nameof(GameCategory), id);
+                throw new NotFoundException(nameof(Game), id);
             }
 
             return game;
@@ -101,7 +95,7 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Updates an existing game.
         /// </summary>
-        public async Task UpdateGameAsync(GameUpdateDTO game)
+        public async Task UpdateGameAsync(GameOutputModel game)
         {
             Game newGame = new Game()
             {
@@ -120,7 +114,7 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task DeleteGameAsync(int id)
         {
-            Game? game = await context.Games.FirstOrDefaultAsync(g=>g.Id == id);
+            var game = await context.Games.FirstOrDefaultAsync(g => g.Id == id);
 
             if (game == null)
             {
@@ -131,6 +125,7 @@ namespace VenomGames.Core.Services
             await context.SaveChangesAsync();
         }
 
+
         /// <summary>
         /// Retrieves featured games by rating.
         /// </summary>
@@ -138,7 +133,8 @@ namespace VenomGames.Core.Services
         public async Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync()
         {
             IEnumerable<Game> games = await context.Games
-                .Where(g => g.Reviews.All(x=>x.Rating>3 && x.Rating<5))
+                .Where(g => g.Reviews.Any(x => x.Rating >= 3))
+                .OrderByDescending(g => g.Reviews.Average(x => x.Rating))
                 .Take(5)
                 .ToListAsync();
 
@@ -150,8 +146,29 @@ namespace VenomGames.Core.Services
                 Description = g.Description,
                 GameCategories = g.GameCategories,
                 Reviews = g.Reviews,
-                ImageUrl= g.ImageUrl
+                ImageUrl = g.ImageUrl
             });
+        }
+
+        /// <summary>
+        /// Retrieves games by a certain category.
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameOutputModel>> GetGamesByCategoryAsync(int categoryId)
+        {
+            return await context.Games
+                .Where(g => g.GameCategories.Any(gc => gc.CategoryId == categoryId))
+                .Select(g => new GameOutputModel
+                {
+                    GameId = g.Id,
+                    Title = g.Title,
+                    Price = g.Price,
+                    Description = g.Description,
+                    GameCategories = g.GameCategories,
+                    Reviews = g.Reviews,
+                    ImageUrl = g.ImageUrl
+                }).ToListAsync();
         }
     }
 }

@@ -37,6 +37,7 @@ namespace VenomGames.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
+
             if (ModelState.IsValid)
             {
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -51,6 +52,15 @@ namespace VenomGames.Controllers
 
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            TempData["Message"] = "You have been logged out successfully.";
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -84,7 +94,7 @@ namespace VenomGames.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
-        
+
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

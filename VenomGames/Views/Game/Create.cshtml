@@ -1,38 +1,37 @@
-﻿@model GameViewModel
+﻿@model GameCreateDTO
 
 @{
-    ViewData["Title"] = "Add New Game";
+    ViewData["Title"] = "Create Game";
 }
 
-<h1>Add New Game</h1>
+<h2>Create Game</h2>
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label for="Title">Title</label>
+        <label asp-for="Title" class="control-label">Title</label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label for="Price">Price</label>
+        <label asp-for="Price" class="control-label">Price</label>
         <input asp-for="Price" class="form-control" />
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label for="Genre">Categories</label>
-        <input asp-for="Categories" class="form-control" />
-        <span asp-validation-for="Categories" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="Description">Description</label>
+        <label asp-for="Description" class="control-label">Description</label>
         <textarea asp-for="Description" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label for="CategoryId">Category</label>
-        <select asp-for="Categories.Select(c=>c.Id)" class="form-control" asp-items="ViewBag.Categories"></select>
-        <span asp-validation-for="Categories.Select(c=>c.Id)" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
 
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="form-group">
+        <label asp-for="ImageUrl" class="control-label">Image URL</label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create Game</button>
+    </div>
+</form>

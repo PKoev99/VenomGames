@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Game;
+using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
@@ -15,9 +16,9 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Games
-        public async Task<IActionResult> Index(GetGamesQuery query)
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<GameOutputModel> games = await gameService.GetGamesAsync(query);
+            IEnumerable<GameOutputModel> games = await gameService.GetGamesAsync(new GetGamesQuery());
             return View(games);
         }
 
@@ -40,7 +41,7 @@ namespace VenomGames.Controllers
 
         // POST: /Games/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]        
         public async Task<IActionResult> Create(GameCreateDTO game)
         {
             if (ModelState.IsValid)
@@ -51,10 +52,10 @@ namespace VenomGames.Controllers
             return View(game);
         }
 
-        // GET: /Games/Edit/5
+        // GET: Game/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
-            GameOutputModel? game = await gameService.GetGameDetailsAsync(id);
+            var game = await gameService.GetGameDetailsAsync(id);
             if (game == null)
             {
                 return NotFound();
@@ -62,40 +63,67 @@ namespace VenomGames.Controllers
             return View(game);
         }
 
-        // POST: /Games/Edit/5
+
+        // POST: Game/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, GameUpdateDTO game)
+        public async Task<IActionResult> Edit(int id, GameUpdateDTO gameUpdateDTO)
         {
-            if (id != game.Id)
+            if (id != gameUpdateDTO.Id)  // Ensure the ID in the URL matches the one from the form
             {
-                return NotFound();
+                return NotFound();  // If IDs don't match, return 404
             }
 
             if (ModelState.IsValid)
             {
+                // Get the existing game from the database
+                var game = await gameService.GetGameDetailsAsync(id);
+                if (game == null)
+                {
+                    return NotFound();  // If the game doesn't exist, return 404
+                }
+
+                // Update the game properties with the new values from the form
+                game.Title = gameUpdateDTO.Title;
+                game.Price = gameUpdateDTO.Price;
+                game.Description = gameUpdateDTO.Description;
+                game.ImageUrl = gameUpdateDTO.ImageUrl;
+
+                // Update the game in the database
                 await gameService.UpdateGameAsync(game);
-                return RedirectToAction(nameof(Index));
+
+                // Redirect to the game's details page or the index page after successful update
+                return RedirectToAction(nameof(Details), new { id = game.GameId });
             }
-            return View(game);
+
+            // If model validation fails, return to the edit view with the current game data
+            return View(gameUpdateDTO);
         }
+
+
 
         // GET: /Games/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            GameOutputModel? game = await gameService.GetGameDetailsAsync(id);
+            var game = await gameService.GetGameDetailsAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
-            return View(game);
+            return View(game); 
         }
 
-        // POST: /Games/Delete/5
-        [HttpPost, ActionName("Delete")]
+
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            GameOutputModel game = await gameService.GetGameDetailsAsync(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
             await gameService.DeleteGameAsync(id);
             return RedirectToAction(nameof(Index));
         }

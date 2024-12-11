@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
@@ -21,29 +22,19 @@ namespace VenomGames.Core.Services
         }
 
         /// <summary>
-        /// Searches for categories from the database.
+        /// Retrieves all categories.
         /// </summary>
-        public async Task<IEnumerable<CategoryOutputModel>> GetCategoryAsync(GetCategoryQuery query)
+        /// <returns></returns>
+        public async Task<IEnumerable<CategoryOutputModel>> GetAllCategoriesAsync()
         {
-            IQueryable<Category> categories = context.Categories;
+            IEnumerable<Category> categories = await context.Categories.ToListAsync();
 
-            string? categoryTitle = query.Name;
-            if (!categoryTitle.IsNullOrEmpty())
+            return categories.Select(c => new CategoryOutputModel
             {
-                categories = categories.Where(g => g.Name.Contains(categoryTitle!));
-            }
-
-            
-
-            IEnumerable<CategoryOutputModel> categoryOutput = await categories
-                .Select(c => new CategoryOutputModel
-                {
-                   Id = c.CategoryId,
-                   Name = c.Name
-                }).ToListAsync();
-
-            return categoryOutput;
-
+                Id = c.CategoryId,
+                Name = c.Name,
+                Games = c.GameCategories
+            });
         }
 
         /// <summary>
@@ -51,20 +42,22 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task<CategoryOutputModel> GetCategoryDetailsAsync(int id)
         {
-            CategoryOutputModel? category = await context.Categories
+            Category? category = await context.Categories
                 .Where(c => c.CategoryId == id)
-                .Select(g => new CategoryOutputModel
-                {
-                   Id = g.CategoryId,
-                   Name = g.Name
-                }).FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
 
             if (category == null)
             {
                 throw new NotFoundException(nameof(Category), id);
             }
 
-            return category;
+            CategoryOutputModel categoryOutput = new CategoryOutputModel
+            {
+                Id = category.CategoryId,
+                Name = category.Name
+            };
+
+            return categoryOutput;
         }
 
         /// <summary>
@@ -84,14 +77,20 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Updates an existing category.
         /// </summary>
-        public async Task UpdateCategoryAsync(CategoryUpdateDTO category)
+        public async Task UpdateCategoryAsync(CategoryUpdateDTO categoryDTO)
         {
-            Category newCategory = new Category()
-            {
-                Name = category.Name
-            };
+            Category? category = await context.Categories
+                .Where(c => c.CategoryId == categoryDTO.Id)
+                .FirstOrDefaultAsync();
 
-            context.Categories.Update(newCategory);
+            if (category == null)
+            {
+                throw new NotFoundException(nameof(Category), category.CategoryId);
+            }
+
+            category.Name = categoryDTO.Name;
+
+            context.Categories.Update(category);
             await context.SaveChangesAsync();
         }
 
@@ -100,7 +99,9 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task DeleteCategoryAsync(int id)
         {
-            Category? category = await context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
+            Category? category = await context.Categories
+                .Where(c=>c.CategoryId==id)
+                .FirstOrDefaultAsync();
 
             if (category == null)
             {
@@ -109,22 +110,6 @@ namespace VenomGames.Core.Services
 
             context.Categories.Remove(category);
             await context.SaveChangesAsync();
-        }
-
-        /// <summary>
-        /// Retrieves all categories.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<CategoryOutputModel>> GetAllCategoriesAsync()
-        {
-            IEnumerable<Category> categories = await context.Categories.ToListAsync();
-
-            return categories.Select(c => new CategoryOutputModel
-            {
-                Id = c.CategoryId,
-                Name = c.Name,
-                Games = c.GameCategories
-            });
         }
     }
 }

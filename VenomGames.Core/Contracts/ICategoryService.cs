@@ -9,12 +9,6 @@ namespace VenomGames.Core.Contracts
     public interface ICategoryService
     {
         /// <summary>
-        /// Searches for a category from the database.
-        /// </summary>
-        /// <returns>List of all categories.</returns>
-        Task<IEnumerable<CategoryOutputModel>> GetCategoryAsync(GetCategoryQuery query);
-
-        /// <summary>
         /// Retrieves a category by its ID.
         /// </summary>
         /// <param name="id">The ID of the category.</param>

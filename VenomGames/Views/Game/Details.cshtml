@@ -1,4 +1,4 @@
-﻿@model GameViewModel
+﻿@model GameOutputModel
 
 @{
     ViewData["Title"] = "Game Details";
@@ -9,10 +9,10 @@
 <div>
     <h2>@Model.Title</h2>
     <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
-    <p><strong>Genre:</strong> @Model.Categories</p>
-    <p><strong>Category:</strong> @Model.Categories</p>
+    <p><strong>Genre:</strong> @Model.GameCategories</p>
+    <p><strong>Category:</strong> @Model.GameCategories</p>
     <p><strong>Description:</strong> @Model.Description</p>
 </div>
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Edit" asp-route-id="@Model.GameId" class="btn btn-warning">Edit</a>
 <a asp-action="Index" class="btn btn-secondary">Back to List</a>

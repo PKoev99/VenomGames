@@ -1,46 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
-using VenomGames.Models.Category;
-using VenomGames.Models.Game;
+using VenomGames.Core.DTOs.Game;
 using VenomGames.Models.Home;
 
 namespace VenomGames.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGameService _gameService;
-        private readonly ICategoryService _categoryService;
+        private readonly IGameService gameService;
+        private readonly ICategoryService categoryService;
 
-        public HomeController(IGameService gameService, ICategoryService categoryService)
+        public HomeController(IGameService _gameService, ICategoryService _categoryService)
         {
-            _gameService = gameService;
-            _categoryService = categoryService;
+            gameService = _gameService;
+            categoryService = _categoryService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int categoryId)
         {
-            var featuredGames = (await _gameService.GetFeaturedGamesAsync()).Select(game => new GameViewModel
-            {
-                Id = game.GameId,
-                Title = game.Title,
-                Description = game.Description,
-                ImageUrl = game.ImageUrl,
-                Price = game.Price
-            });
+            var categories = await categoryService.GetAllCategoriesAsync();
 
-            var categories = (await _categoryService.GetAllCategoriesAsync()).Select(category => new CategoryViewModel
-            {
-                Id = category.Id,
-                Name = category.Name
-            });
+            IEnumerable<GameOutputModel> games = categoryId == null ? await gameService.GetFeaturedGamesAsync() : await gameService.GetGamesByCategoryAsync(categoryId);
 
-            var model = new HomeViewModel
+            var viewModel = new HomeViewModel
             {
-                FeaturedGames = featuredGames,
-                Categories = categories
+                Categories = await categoryService.GetAllCategoriesAsync(),
+                FeaturedGames = await gameService.GetFeaturedGamesAsync()
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         // GET: /Home/Error

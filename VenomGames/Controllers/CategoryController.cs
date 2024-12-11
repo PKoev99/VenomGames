@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Category;
+using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
@@ -15,21 +16,11 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Category
-        public async Task<IActionResult> Index(GetCategoryQuery query)
+        // GET: Category
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<CategoryOutputModel> categories = await categoryService.GetCategoryAsync(query);
+            var categories = await categoryService.GetAllCategoriesAsync();
             return View(categories);
-        }
-
-        // GET: /Category/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return View(category);
         }
 
         // GET: /Category/Create
@@ -37,8 +28,7 @@ namespace VenomGames.Controllers
         {
             return View();
         }
-
-        // POST: /Category/Create
+        // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateDTO category)
@@ -51,10 +41,10 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // GET: /Category/Edit/5
+        // GET: Category/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
-            CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
+            var category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -62,7 +52,7 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // POST: /Category/Edit/5
+        // POST: Category/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryUpdateDTO category)
@@ -80,8 +70,8 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // GET: /Category/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        // GET: /Category/Details/5
+        public async Task<IActionResult> Details(int id)
         {
             CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
@@ -91,7 +81,18 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // POST: /Category/Delete/5
+        // GET: Category/Delete/{id}
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await categoryService.GetCategoryDetailsAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+
+        // POST: Category/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

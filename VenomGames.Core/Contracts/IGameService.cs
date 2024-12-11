@@ -27,6 +27,13 @@ namespace VenomGames.Core.Contracts
         /// <returns></returns>
         Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync();
 
+        /// <summary>
+        /// Gets all games by a specific category.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<IEnumerable<GameOutputModel>> GetGamesByCategoryAsync(int id);
+
 
         /// <summary>
         /// Adds a new game to the database.
@@ -38,7 +45,7 @@ namespace VenomGames.Core.Contracts
         /// Updates an existing game.
         /// </summary>
         /// <param name="game">Game with updated information.</param>
-        Task UpdateGameAsync(GameUpdateDTO game);
+        Task UpdateGameAsync(GameOutputModel game);
 
         /// <summary>
         /// Deletes a game by its ID.

@@ -1,17 +1,14 @@
-﻿@model IEnumerable<GameViewModel>
+﻿@model IEnumerable<GameOutputModel>
 
-@{
-    ViewData["Title"] = "Games List";
-}
+<h2>Games</h2>
 
-<h1>Games List</h1>
+<a href="@Url.Action("Create", "Game")" class="btn btn-success">Create New Game</a>
 
 <table class="table">
     <thead>
         <tr>
             <th>Title</th>
             <th>Price</th>
-            <th>Categories</th>
             <th>Description</th>
             <th>Actions</th>
         </tr>
@@ -21,17 +18,13 @@
         {
             <tr>
                 <td>@game.Title</td>
-                <td>@game.Price.ToString("C")</td>
-                <td>@game.Categories</td>
+                <td>@game.Price</td>
                 <td>@game.Description</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@game.Id" class="btn btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@game.Id" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@game.Id" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("Edit", "Game", new { id = game.GameId })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Delete", "Game", new { id = game.GameId })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<a asp-action="Create" class="btn btn-primary">Add New Game</a>
