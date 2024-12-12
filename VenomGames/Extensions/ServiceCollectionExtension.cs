@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IShoppingCartService, ShoppingCartService>();
+            services.AddHttpContextAccessor();
 
             return services;
         }

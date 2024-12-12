@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OrderViewModel>
+﻿@model IEnumerable<OrderOutputModel>
 
 @{
     ViewData["Title"] = "Orders";
@@ -19,8 +19,8 @@
         @foreach (var order in Model)
         {
             <tr>
-                <td>@order.UserName</td>
-                <td>@order.OrderDate.ToShortDateString()</td>
+                <td>@order.Username</td>
+                <td>@order.OrderDate?.ToShortDateString()</td>
                 <td>@order.TotalPrice.ToString("C")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-info">Details</a>

@@ -76,6 +76,8 @@ namespace VenomGames.Core.Services
         {
             var game = await context.Games
                     .Where(g => g.Id == id)
+                    .Include(g=>g.GameCategories)
+                    .ThenInclude(gc=>gc.Category)
                     .Select(g => new GameOutputModel
                     {
                         GameId = g.Id,

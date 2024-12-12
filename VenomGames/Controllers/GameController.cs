@@ -48,9 +48,6 @@ namespace VenomGames.Controllers
             return View();
         }
 
-
-
-
         // POST: /Games/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -147,8 +144,6 @@ namespace VenomGames.Controllers
             return View(game); 
         }
 
-
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed([FromForm] int id)
         {

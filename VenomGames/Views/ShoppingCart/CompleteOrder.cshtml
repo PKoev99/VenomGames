@@ -1,0 +1,40 @@
+﻿@model ShoppingCart
+
+@{
+    ViewData["Title"] = "Complete Your Order";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Thank you for shopping with us! Please review your order before completing it:</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Game</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Game.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@(item.Quantity * item.Price).ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Total: @Model.TotalPrice.ToString("C")</h3>
+
+<p>Enter your payment details below:</p>
+
+<form method="post" action="@Url.Action("FinalizeOrder", "ShoppingCart")">
+    <!-- Add payment details form, shipping address, etc. -->
+    <button type="submit" class="btn btn-success">Complete Purchase</button>
+</form>

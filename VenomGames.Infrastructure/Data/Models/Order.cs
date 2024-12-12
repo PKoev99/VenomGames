@@ -43,6 +43,6 @@ namespace VenomGames.Infrastructure.Data.Models
         /// Date when the order was placed.
         /// </summary>
         [Comment("Order date")]
-        public DateTime OrderDate { get; set; }
+        public DateTime? OrderDate { get; set; }
     }
 }

@@ -27,5 +27,7 @@ namespace VenomGames.Infrastructure.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<GameCategory> GameCategories { get; set; }
         public DbSet<GameOrder> GameOrders { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

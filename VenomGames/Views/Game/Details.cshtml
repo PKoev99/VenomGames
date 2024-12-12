@@ -1,43 +1,52 @@
 ﻿@model GameOutputModel
 
-<h2>Game Details</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Game Details</h2>
 
-<div style="margin-bottom: 20px;">
-    <label><strong>Name:</strong></label>
-    <p>@Model.Title</p>
-</div>
+    <div class="card shadow-sm p-4">
+        <!-- Game Title -->
+        <div class="mb-3">
+            <h3 class="card-title">@Model.Title</h3>
+        </div>
 
-<div style="margin-bottom: 20px;">
-    <label><strong>Description:</strong></label>
-    <p>@Model.Description</p>
-</div>
+        <!-- Game Image -->
+        <div class="mb-3">
+            <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" style="max-width: 300px;">
+        </div>
 
-<div style="margin-bottom: 20px;">
-    <label><strong>Price:</strong></label>
-    <p>@Model.Price</p>
-</div>
+        <!-- Game Description -->
+        <div class="mb-3">
+            <label class="fw-bold">Description:</label>
+            <p>@Model.Description</p>
+        </div>
 
-<div style="margin-bottom: 20px;">
-    <label><strong>Image:</strong></label>
-    <br />
-    <img src="@Model.ImageUrl" alt="@Model.Title" style="max-width: 300px;" />
-</div>
+        <!-- Game Price -->
+        <div class="mb-3">
+            <label class="fw-bold">Price:</label>
+            <p>$@Model.Price</p>
+        </div>
 
-<div style="margin-bottom: 20px;">
-    <label><strong>Categories:</strong></label>
-    @if (Model.SelectedCategoryIds != null && Model.SelectedCategoryIds.Any())
-    {
-        <ul>
-            @foreach (var category in Model.GameCategories)
+        <!-- Game Categories -->
+        <div class="mb-3">
+            <label class="fw-bold">Categories:</label>
+            @if (Model.GameCategories != null && Model.GameCategories.Any())
             {
-                <li>@category.Category.Name</li>
+                <ul>
+                    @foreach (var gameCategory in Model.GameCategories)
+                    {
+                        <li>@gameCategory.Category.Name</li>
+                    }
+                </ul>
             }
-        </ul>
-    }
-    else
-    {
-        <p>No categories assigned to this game.</p>
-    }
-</div>
+            else
+            {
+                <p>No categories assigned to this game.</p>
+            }
+        </div>
 
-<a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
+        <!-- Back Button -->
+        <div class="mt-4">
+            <a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
+        </div>
+    </div>
+</div>
