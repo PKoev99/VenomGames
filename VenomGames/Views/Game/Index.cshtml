@@ -7,6 +7,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Image</th>
             <th>Title</th>
             <th>Price</th>
             <th>Description</th>
@@ -17,6 +18,9 @@
         @foreach (var game in Model)
         {
             <tr>
+                <td>
+                    <img src="@game.ImageUrl" alt="@game.Title" style="max-width: 100px; max-height: 100px;" />
+                </td>
                 <td>@game.Title</td>
                 <td>@game.Price</td>
                 <td>@game.Description</td>

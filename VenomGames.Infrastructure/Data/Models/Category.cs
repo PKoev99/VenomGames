@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using static VenomGames.Infrastructure.Constants.DataConstants;
-using static VenomGames.Infrastructure.Constants.ErrorMessages;
 
 namespace VenomGames.Infrastructure.Data.Models
 {

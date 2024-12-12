@@ -1,24 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Game;
-using VenomGames.Core.Services;
-using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
     public class GameController : Controller
     {
         private readonly IGameService gameService;
+        private readonly ICategoryService categoryService;
 
-        public GameController(IGameService _gameService)
+        public GameController(IGameService _gameService, ICategoryService categoryService)
         {
             gameService = _gameService;
+            this.categoryService = categoryService;
         }
 
         // GET: /Games
         public async Task<IActionResult> Index()
         {
-            IEnumerable<GameOutputModel> games = await gameService.GetGamesAsync(new GetGamesQuery());
+            IEnumerable<GameOutputModel> games = await gameService.GetAllGamesAsync();
             return View(games);
         }
 
@@ -34,21 +36,40 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Games/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categories = await categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            });
+
             return View();
         }
 
+
+
+
         // POST: /Games/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]        
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GameCreateDTO game)
         {
             if (ModelState.IsValid)
             {
-                await gameService.CreateGameAsync(game);
+                await gameService.CreateGameAsync(game); // Pass the DTO to your service for processing
                 return RedirectToAction(nameof(Index));
             }
+
+            // Reload categories if model validation fails
+            var categories = await categoryService.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            });
+
             return View(game);
         }
 
@@ -60,8 +81,21 @@ namespace VenomGames.Controllers
             {
                 return NotFound();
             }
+
+            var categories = await categoryService.GetAllCategoriesAsync();
+
+            // Passing the current categories of the game to the view
+            ViewBag.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name,
+                // Check if the category is selected for the game
+                Selected = game.SelectedCategoryIds.Contains(c.Id)
+            });
+
             return View(game);
         }
+
 
 
         // POST: Game/Edit/{id}
@@ -114,18 +148,28 @@ namespace VenomGames.Controllers
         }
 
 
-        [HttpPost, ActionName("DeleteConfirmed")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed([FromForm] int id)
         {
-            GameOutputModel game = await gameService.GetGameDetailsAsync(id);
-            if (game == null)
+            try
             {
+                // Await the DeleteGameAsync method to ensure it completes before redirecting
+                await gameService.DeleteGameAsync(id);
+                return RedirectToAction("Index"); // Redirect to the index view after deletion
+            }
+            catch (NotFoundException)
+            {
+                // If the game is not found, return a NotFound error
                 return NotFound();
             }
-
-            await gameService.DeleteGameAsync(id);
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                // Handle unexpected errors
+                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
+                return View(); // Optionally, return an error view
+            }
         }
+
     }
 }

@@ -8,6 +8,7 @@
         public decimal Price { get; set; }
         public string ImageUrl { get; set; } = null!;
         public ICollection<Infrastructure.Data.Models.GameCategory> GameCategories { get; set; } = null!;
+        public IEnumerable<int> SelectedCategoryIds { get; set; } = new List<int>();
         public ICollection<Infrastructure.Data.Models.Review> Reviews { get; set; } = null!;
     }
 }

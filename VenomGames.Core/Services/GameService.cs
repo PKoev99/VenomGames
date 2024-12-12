@@ -28,7 +28,7 @@ namespace VenomGames.Core.Services
             IQueryable<Game> games = context.Games;
 
             string? gameTitle = query.Title;
-            if (!gameTitle.IsNullOrEmpty()) 
+            if (!gameTitle.IsNullOrEmpty())
             {
                 games = games.Where(g => g.Title.Contains(gameTitle!));
             }
@@ -50,22 +50,43 @@ namespace VenomGames.Core.Services
         }
 
         /// <summary>
+        /// Retrieves all games.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameOutputModel>> GetAllGamesAsync()
+        {
+            IEnumerable<Game> games = await context.Games.ToListAsync();
+
+            return games.Select(c => new GameOutputModel
+            {
+                GameId = c.Id,
+                Description = c.Description,
+                Price = c.Price,
+                Title = c.Title,
+                GameCategories = c.GameCategories,
+                Reviews = c.Reviews,
+                ImageUrl = c.ImageUrl
+            });
+        }
+
+        /// <summary>
         /// Retrieves details about a specific game by ID.
         /// </summary>
         public async Task<GameOutputModel> GetGameDetailsAsync(int id)
         {
-            GameOutputModel? game = await context.Games
-                .Where(g => g.Id == id)
-                .Select(g => new GameOutputModel
-                {
-                    GameId = g.Id,
-                    Description = g.Description,
-                    Price = g.Price,
-                    Title = g.Title,
-                    GameCategories = g.GameCategories,
-                    Reviews= g.Reviews,
-                    ImageUrl= g.ImageUrl
-                }).FirstOrDefaultAsync();
+            var game = await context.Games
+                    .Where(g => g.Id == id)
+                    .Select(g => new GameOutputModel
+                    {
+                        GameId = g.Id,
+                        Title = g.Title,
+                        Price = g.Price,
+                        Description = g.Description,
+                        ImageUrl = g.ImageUrl,
+                        GameCategories = g.GameCategories,
+                        Reviews = g.Reviews
+                    })
+                    .FirstOrDefaultAsync();
 
             if (game == null)
             {
@@ -80,7 +101,7 @@ namespace VenomGames.Core.Services
         /// </summary>
         public async Task CreateGameAsync(GameCreateDTO game)
         {
-            Game newGame = new Game()
+            var newGame = new Game
             {
                 Title = game.Title,
                 Price = game.Price,
@@ -88,25 +109,36 @@ namespace VenomGames.Core.Services
                 ImageUrl = game.ImageUrl
             };
 
+            // Add relationships with the selected categories
+            foreach (var categoryId in game.SelectedCategoryIds)
+            {
+                newGame.GameCategories.Add(new GameCategory
+                {
+                    CategoryId = categoryId
+                });
+            }
+
             context.Games.Add(newGame);
             await context.SaveChangesAsync();
         }
+
+
 
         /// <summary>
         /// Updates an existing game.
         /// </summary>
         public async Task UpdateGameAsync(GameOutputModel game)
         {
-            Game newGame = new Game()
+            var existingGame = await context.Games.FirstOrDefaultAsync(g => g.Id == game.GameId);
+            if (existingGame != null)
             {
-                Title = game.Title,
-                Price = game.Price,
-                Description = game.Description,
-                ImageUrl = game.ImageUrl
-            };
+                existingGame.Title = game.Title;
+                existingGame.Price = game.Price;
+                existingGame.Description = game.Description;
+                existingGame.ImageUrl = game.ImageUrl;
 
-            context.Games.Update(newGame);
-            await context.SaveChangesAsync();
+                context.SaveChanges();
+            }
         }
 
         /// <summary>

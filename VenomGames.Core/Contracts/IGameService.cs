@@ -1,4 +1,5 @@
-﻿using VenomGames.Core.DTOs.Game;
+﻿using VenomGames.Core.DTOs.Category;
+using VenomGames.Core.DTOs.Game;
 
 namespace VenomGames.Core.Contracts
 {
@@ -13,6 +14,12 @@ namespace VenomGames.Core.Contracts
         /// </summary>
         /// <returns>List of all games.</returns>
         Task<IEnumerable<GameOutputModel>> GetGamesAsync(GetGamesQuery queery);
+
+        /// <summary>
+        /// Retrieves all games.
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<GameOutputModel>> GetAllGamesAsync();
 
         /// <summary>
         /// Retrieves details about a specific game by ID.
