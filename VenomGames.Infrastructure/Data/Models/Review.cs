@@ -45,7 +45,7 @@ namespace VenomGames.Infrastructure.Data.Models
         /// Content of the review.
         /// </summary>
         [Comment("Review content")]
-        public string? Content { get; set; }
+        public string Content { get; set; }
 
         /// <summary>
         /// Rating given by the user from 1-5.

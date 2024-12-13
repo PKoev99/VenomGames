@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Review;
 
@@ -14,9 +15,15 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Reviews/ByGame/5
-        public async Task<IActionResult> ByGame(int gameId)
+        public async Task<IActionResult> Index(int id)
         {
-            IEnumerable<ReviewOutputModel> reviews = await reviewService.GetReviewsByGameIdAsync(gameId);
+            var reviews = await reviewService.GetReviewsByGameIdAsync(id);
+
+            if (!reviews.Any())
+            {
+                ViewBag.Message = "No reviews available for this game.";
+            }
+
             return View(reviews);
         }
 
@@ -31,23 +38,37 @@ namespace VenomGames.Controllers
             return View(review);
         }
 
-        // GET: /Reviews/Create
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Create(int id)
         {
-            return View();
+            var model = new ReviewCreateDTO
+            {
+                GameId = id // Automatically link this review to the game
+            };
+
+            return View(model);
         }
 
-        // POST: /Reviews/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ReviewCreateDTO review)
+        public async Task<IActionResult> Create(ReviewCreateDTO model)
         {
             if (ModelState.IsValid)
             {
-                await reviewService.CreateReviewAsync(review);
-                return RedirectToAction(nameof(ByGame), new { gameId = review.GameId });
+                // Get the current user's ID
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    // Handle case where no user is logged in
+                    return Unauthorized();
+                }
+
+                // Pass the userId to the service
+                await reviewService.CreateReviewAsync(model, userId);
+                return RedirectToAction("Index", "Review", new { id = model.GameId });
             }
-            return View(review);
+
+            return View(model);
         }
 
         // GET: /Reviews/Edit/5
@@ -74,7 +95,7 @@ namespace VenomGames.Controllers
             if (ModelState.IsValid)
             {
                 await reviewService.UpdateReviewAsync(review);
-                return RedirectToAction(nameof(ByGame), new { gameId = review.GameId });
+                return RedirectToAction(nameof(Index), new { gameId = review.GameId });
             }
             return View(review);
         }
@@ -100,7 +121,7 @@ namespace VenomGames.Controllers
             {
                 await reviewService.DeleteReviewAsync(id);
             }
-            return RedirectToAction(nameof(ByGame), new { gameId = review?.GameId });
+            return RedirectToAction(nameof(Index), new { gameId = review?.GameId });
         }
     }
 }

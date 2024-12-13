@@ -32,7 +32,7 @@ namespace VenomGames.Core.Contracts
         /// Adds a new review to the database.
         /// </summary>
         /// <param name="review">Review to be added.</param>
-        Task CreateReviewAsync(ReviewCreateDTO review);
+        Task CreateReviewAsync(ReviewCreateDTO review, string userId);
 
         /// <summary>
         /// Updates an existing review.

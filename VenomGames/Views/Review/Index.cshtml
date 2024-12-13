@@ -1,37 +1,33 @@
-﻿@model IEnumerable<ReviewViewModel>
+﻿@model IEnumerable<ReviewOutputModel>
 
-@{
-    ViewData["Title"] = "Reviews";
+<h2>Reviews</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
 }
-
-<h1>Reviews</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Game</th>
-            <th>User</th>
-            <th>Rating</th>
-            <th>Content</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var review in Model)
-        {
+else
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>@review.GameTitle</td>
-                <td>@review.UserName</td>
-                <td>@review.Rating</td>
-                <td>@review.Content</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@review.Id" class="btn btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@review.Id" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@review.Id" class="btn btn-danger">Delete</a>
-                </td>
+                <th>Rating</th>
+                <th>Content</th>
+                <th>Author</th>
+                <th>Date</th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<a asp-action="Create" class="btn btn-primary">Add New Review</a>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Rating</td>
+                    <td>@review.Content</td>
+                    <td>@review.UserName</td>
+                    <td>@review.CreatedAt.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>

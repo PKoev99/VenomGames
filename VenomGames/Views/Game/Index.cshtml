@@ -28,11 +28,12 @@
                     <a href="@Url.Action("Edit", "Game", new { id = game.GameId })" class="btn btn-primary">Edit</a>
                     <a href="@Url.Action("Delete", "Game", new { id = game.GameId })" class="btn btn-danger">Delete</a>
 
-                    <!-- Order button calls AddToCart -->
                     <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post" style="display:inline;">
                         <input type="hidden" name="gameId" value="@game.GameId" />
                         <button type="submit" class="btn btn-primary">Order</button>
                     </form>
+                    <a href="@Url.Action("Index", "Review", new { id = game.GameId })" class="btn btn-primary">Reviews</a>
+                    <a href="@Url.Action("Create", "Review", new { id = game.GameId })" class="btn btn-primary">Add Review</a>
                 </td>
             </tr>
         }

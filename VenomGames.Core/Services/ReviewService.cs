@@ -117,20 +117,21 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Adds a new review to the database.
         /// </summary>
-        public async Task CreateReviewAsync(ReviewCreateDTO review)
+        public async Task CreateReviewAsync(ReviewCreateDTO model, string userId)
         {
-            Review newReview = new Review()
+            var review = new Review
             {
-                GameId = review.GameId,
-                Rating = review.Rating,
-                Content = review.Content,
-                CreatedAt = review.CreatedAt,
-                UserId = review.UserId
+                GameId = model.GameId,
+                UserId = userId, // Set the current user's ID
+                Content = model.Content,
+                Rating = model.Rating,
+                CreatedAt = DateTime.UtcNow
             };
 
-            context.Reviews.Add(newReview);
+            await context.Reviews.AddAsync(review);
             await context.SaveChangesAsync();
         }
+
 
         /// <summary>
         /// Updates an existing review.
