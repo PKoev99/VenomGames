@@ -18,21 +18,22 @@ namespace VenomGames.Controllers
             userCartService = _userCartService;
         }
 
-        public async Task<IActionResult> Index(int categoryId)
-        {     
-
+        public async Task<IActionResult> Index(int? categoryId)
+        {
             var categories = await categoryService.GetAllCategoriesAsync();
-
-            IEnumerable<GameOutputModel> games = categoryId == null ? await gameService.GetFeaturedGamesAsync() : await gameService.GetGamesByCategoryAsync(categoryId);
+            IEnumerable<GameOutputModel> games = categoryId == null
+                ? await gameService.GetFeaturedGamesAsync()
+                : await gameService.GetGamesByCategoryAsync(categoryId.Value);
 
             var viewModel = new HomeViewModel
             {
-                Categories = await categoryService.GetAllCategoriesAsync(),
-                FeaturedGames = await gameService.GetFeaturedGamesAsync()
+                Categories = categories,
+                FeaturedGames = games
             };
 
             return View(viewModel);
         }
+
 
         // GET: /Home/Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

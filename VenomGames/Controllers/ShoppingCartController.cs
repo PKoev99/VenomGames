@@ -19,35 +19,21 @@ namespace VenomGames.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Login", "Account");
+                return Unauthorized();
             }
 
-            var cart = await _shoppingCartService.GetShoppingCartAsync(userId);
+            var shoppingCart = await _shoppingCartService.GetShoppingCartAsync(userId);
 
-            if (cart == null || !cart.Items.Any())
+            if (shoppingCart == null || !shoppingCart.Items.Any())
             {
-                ViewBag.Message = "Your shopping cart is empty.";
                 return View(new ShoppingCartOutputModel());
             }
 
-            var viewModel = new ShoppingCartOutputModel
-            {
-                TotalPrice = cart.TotalPrice,
-                Items = cart.Items.Select(item => new CartItemOutputModel
-                {
-                    GameId = item.GameId,
-                    Title = item.Title,
-                    ImageUrl = item.ImageUrl,
-                    Quantity = item.Quantity,
-                    Price = item.Price
-                }).ToList()
-            };
-
-            return View(viewModel);
+            return View(shoppingCart);
         }
 
 
@@ -78,25 +64,38 @@ namespace VenomGames.Controllers
 
         // Remove item from cart
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCart(int itemId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
+            Console.WriteLine("Received Item ID: " + itemId);
+            if (itemId == 0)
             {
-                return RedirectToAction("Login", "Account");
+                // Handle the case where the ID is not valid
+                TempData["ErrorMessage"] = "Invalid item ID.";
+                return RedirectToAction("Index");
+            }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
             }
 
             var result = await _shoppingCartService.RemoveFromCartAsync(userId, itemId);
 
             if (!result)
             {
-                // Handle failure (optional)
-                TempData["Error"] = "Failed to remove the item from the cart.";
+                TempData["ErrorMessage"] = "Failed to remove the item from the cart.";
+                return RedirectToAction("Index");
             }
 
+            TempData["SuccessMessage"] = "Item removed successfully!";
             return RedirectToAction("Index");
         }
+
+
+
+
 
 
 
@@ -105,8 +104,22 @@ namespace VenomGames.Controllers
         public async Task<IActionResult> CompleteOrder()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var cart = await _shoppingCartService.CompleteOrderAsync(userId);
-            return RedirectToAction("OrderConfirmation", new { orderId = cart.Id });
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            try
+            {
+                var cart = await _shoppingCartService.CompleteOrderAsync(userId);
+                return RedirectToAction("OrderConfirmation", new { orderId = cart.Id });
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
 
         // Order confirmation

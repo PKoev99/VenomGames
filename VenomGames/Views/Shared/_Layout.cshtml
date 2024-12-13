@@ -33,14 +33,10 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav d-flex align-items-center">
-                        <li class="nav-item me-3">
-                            <div class="input-group rounded">
-                                <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                                <span class="input-group-text border-0" id="search-addon">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                            </div>
-                        </li>
+                        <form method="get" asp-controller="Game" asp-action="Index" class="d-flex">
+                            <input type="search" name="searchQuery" class="form-control me-2" placeholder="Search games..." aria-label="Search" />
+                            <button type="submit" class="btn btn-outline-primary">Search</button>
+                        </form>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

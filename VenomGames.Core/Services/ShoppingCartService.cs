@@ -124,7 +124,7 @@ namespace VenomGames.Core.Services
                 return false;
             }
 
-            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+            var item = cart.Items.FirstOrDefault(i => i.GameId == itemId);
 
             if (item == null)
             {
@@ -140,22 +140,55 @@ namespace VenomGames.Core.Services
         }
 
 
+
         // Complete the order and mark the cart as completed
         public async Task<ShoppingCartOutputModel> CompleteOrderAsync(string userId)
         {
-            var cart = await GetShoppingCartAsync(userId);
+            var cart = await _context.ShoppingCarts
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Game)
+                .FirstOrDefaultAsync(c => c.UserId == userId && !c.IsCompleted);
 
-            if (cart.Items.Count == 0)
+            if (cart == null || !cart.Items.Any())
             {
                 throw new InvalidOperationException("Cannot complete an empty cart.");
             }
 
+            // Create a new order
+            var order = new Order
+            {
+                UserId = userId,
+                TotalPrice = cart.TotalPrice,
+                OrderDate = DateTime.UtcNow,
+                GameOrders = cart.Items.Select(item => new GameOrder
+                {
+                    GameId = item.GameId
+                }).ToList()
+            };
+
+            _context.Orders.Add(order);
+
+            // Mark cart as completed
             cart.IsCompleted = true;
             cart.OrderDate = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
-            // Optionally, you can also create an order in an Orders table here
-            return cart;
+            return new ShoppingCartOutputModel
+            {
+                Id = order.Id,
+                TotalPrice = order.TotalPrice,
+                IsCompleted = cart.IsCompleted,
+                OrderDate = order.OrderDate ?? DateTime.UtcNow,
+                Items = cart.Items.Select(i => new CartItemOutputModel
+                {
+                    GameId = i.GameId,
+                    Title = i.Game.Title,
+                    ImageUrl = i.Game.ImageUrl,
+                    Quantity = i.Quantity,
+                    Price = i.Price
+                }).ToList()
+            };
         }
     }
 }

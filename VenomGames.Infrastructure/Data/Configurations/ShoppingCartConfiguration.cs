@@ -17,6 +17,11 @@ namespace VenomGames.Infrastructure.Data.Configurations
                 .UseIdentityColumn(1, 1);
 
             builder
+                .HasMany(c => c.Items)
+                .WithOne(c => c.ShoppingCart)
+                .HasForeignKey(c => c.ShoppingCartId);
+
+            builder
                 .HasOne(sc => sc.User)
                 .WithMany()
                 .HasForeignKey(sc => sc.UserId)

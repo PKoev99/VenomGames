@@ -11,16 +11,30 @@ namespace VenomGames.Controllers
         private readonly IGameService gameService;
         private readonly ICategoryService categoryService;
 
-        public GameController(IGameService _gameService, ICategoryService categoryService)
+        public GameController(IGameService _gameService, ICategoryService _categoryService)
         {
             gameService = _gameService;
-            this.categoryService = categoryService;
+            categoryService = _categoryService;
         }
 
         // GET: /Games
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchQuery)
         {
-            IEnumerable<GameOutputModel> games = await gameService.GetAllGamesAsync();
+            IEnumerable<GameOutputModel> games;
+
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                // If no search query, show all games
+                games = await gameService.GetAllGamesAsync();
+            }
+            else
+            {
+                // If there's a search query, filter the games
+                games = await gameService.GetAllGamesAsync();
+                games = games.Where(game => game.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                                             game.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+            }
+
             return View(games);
         }
 

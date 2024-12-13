@@ -20,7 +20,7 @@ public class ShoppingCart
     /// <summary>
     /// Shopping cart game collection
     /// </summary>
-    public ICollection<CartItem> Items { get; set; } = null!;
+    public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
 
     /// <summary>
     /// Shopping cart total price

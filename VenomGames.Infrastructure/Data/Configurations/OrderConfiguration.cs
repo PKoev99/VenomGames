@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Infrastructure.Data.Configurations
@@ -13,7 +14,12 @@ namespace VenomGames.Infrastructure.Data.Configurations
 
             builder
                 .Property(o => o.Id)
-                .UseIdentityColumn(1, 1);
+            .UseIdentityColumn(1, 1);
+
+            builder
+                .HasMany(o => o.GameOrders)
+                .WithOne(go => go.Order)
+                .HasForeignKey(go => go.OrderId);
 
             builder
                 .HasOne(o => o.User)
