@@ -2,7 +2,7 @@
 {
     public class ReviewOutputModel
     {
-        public int Id { get; set; }
+        public int ReviewId { get; set; }
         public int GameId { get; set; }
         public string GameTitle { get; set; } = null!;
         public string UserId { get; set; } = null!;

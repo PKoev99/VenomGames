@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Game;
+using VenomGames.Core.DTOs.Review;
 using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
 
@@ -41,7 +42,15 @@ namespace VenomGames.Core.Services
                     Price = g.Price,
                     Title = g.Title,
                     GameCategories = g.GameCategories,
-                    Reviews = g.Reviews,
+                    Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                    {
+                        ReviewId = r.ReviewId,
+                        GameId = r.GameId,
+                        Content = r.Content,
+                        Rating = r.Rating,
+                        UserName = r.User.UserName, // Assuming User navigation property
+                        CreatedAt = r.CreatedAt
+                    }).ToList(),
                     ImageUrl = g.ImageUrl
                 }).ToListAsync();
 
@@ -55,18 +64,29 @@ namespace VenomGames.Core.Services
         /// <returns></returns>
         public async Task<IEnumerable<GameOutputModel>> GetAllGamesAsync()
         {
-            IEnumerable<Game> games = await context.Games.ToListAsync();
+            var games = await context.Games
+                .Include(g => g.Reviews) // Include reviews from the database
+                .Select(g => new GameOutputModel
+                {
+                    GameId = g.Id,
+                    Title = g.Title,
+                    Price = g.Price,
+                    Description = g.Description,
+                    ImageUrl = g.ImageUrl,
+                    AverageRating = g.Reviews.Any() ? g.Reviews.Average(r => r.Rating) : 0, // Calculate average rating
+                    Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                    {
+                        ReviewId = r.ReviewId,
+                        GameId = r.GameId,
+                        Content = r.Content,
+                        Rating = r.Rating,
+                        UserName = r.User.UserName, // Assuming User navigation property
+                        CreatedAt = r.CreatedAt
+                    }).ToList()
+                })
+                .ToListAsync();
 
-            return games.Select(c => new GameOutputModel
-            {
-                GameId = c.Id,
-                Description = c.Description,
-                Price = c.Price,
-                Title = c.Title,
-                GameCategories = c.GameCategories,
-                Reviews = c.Reviews,
-                ImageUrl = c.ImageUrl
-            });
+            return games;
         }
 
         /// <summary>
@@ -86,7 +106,15 @@ namespace VenomGames.Core.Services
                         Description = g.Description,
                         ImageUrl = g.ImageUrl,
                         GameCategories = g.GameCategories,
-                        Reviews = g.Reviews
+                        Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                        {
+                            ReviewId = r.ReviewId,
+                            GameId = r.GameId,
+                            Content = r.Content,
+                            Rating = r.Rating,
+                            UserName = r.User.UserName, // Assuming User navigation property
+                            CreatedAt = r.CreatedAt
+                        }).ToList(),
                     })
                     .FirstOrDefaultAsync();
 
@@ -179,7 +207,15 @@ namespace VenomGames.Core.Services
                 Price = g.Price,
                 Description = g.Description,
                 GameCategories = g.GameCategories,
-                Reviews = g.Reviews,
+                Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                {
+                    ReviewId = r.ReviewId,
+                    GameId = r.GameId,
+                    Content = r.Content,
+                    Rating = r.Rating,
+                    UserName = r.User.UserName, // Assuming User navigation property
+                    CreatedAt = r.CreatedAt
+                }).ToList(),
                 ImageUrl = g.ImageUrl
             });
         }
@@ -200,7 +236,15 @@ namespace VenomGames.Core.Services
                     Price = g.Price,
                     Description = g.Description,
                     GameCategories = g.GameCategories,
-                    Reviews = g.Reviews,
+                    Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                    {
+                        ReviewId = r.ReviewId,
+                        GameId = r.GameId,
+                        Content = r.Content,
+                        Rating = r.Rating,
+                        UserName = r.User.UserName, // Assuming User navigation property
+                        CreatedAt = r.CreatedAt
+                    }).ToList(),
                     ImageUrl = g.ImageUrl
                 }).ToListAsync();
         }

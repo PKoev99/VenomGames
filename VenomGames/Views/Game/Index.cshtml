@@ -11,6 +11,7 @@
             <th>Title</th>
             <th>Price</th>
             <th>Description</th>
+            <th>Rating</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -24,6 +25,16 @@
                 <td>@game.Title</td>
                 <td>@game.Price</td>
                 <td>@game.Description</td>
+                <td>
+                    @if (game.Reviews.Any())
+                    {
+                        @string.Format("{0:0.0}", game.Reviews.Average(r => r.Rating))
+                    }
+                    else
+                    {
+                        <span>No Ratings</span>
+                    }
+                </td>
                 <td>
                     <a href="@Url.Action("Edit", "Game", new { id = game.GameId })" class="btn btn-primary">Edit</a>
                     <a href="@Url.Action("Delete", "Game", new { id = game.GameId })" class="btn btn-danger">Delete</a>

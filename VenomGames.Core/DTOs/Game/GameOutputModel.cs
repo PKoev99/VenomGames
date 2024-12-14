@@ -1,4 +1,6 @@
-﻿namespace VenomGames.Core.DTOs.Game
+﻿using VenomGames.Core.DTOs.Review;
+
+namespace VenomGames.Core.DTOs.Game
 {
     public class GameOutputModel
     {
@@ -7,8 +9,9 @@
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public string ImageUrl { get; set; } = null!;
+        public decimal AverageRating { get; set; }
         public ICollection<Infrastructure.Data.Models.GameCategory> GameCategories { get; set; } = null!;
         public IEnumerable<int> SelectedCategoryIds { get; set; } = new List<int>();
-        public ICollection<Infrastructure.Data.Models.Review> Reviews { get; set; } = null!;
+        public ICollection<ReviewOutputModel> Reviews { get; set; } = null!;
     }
 }
