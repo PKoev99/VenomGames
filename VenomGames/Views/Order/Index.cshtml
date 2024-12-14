@@ -9,7 +9,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>User</th>
             <th>Order Date</th>
             <th>Total Price</th>
             <th>Actions</th>
@@ -19,7 +18,6 @@
         @foreach (var order in Model)
         {
             <tr>
-                <td>@order.Username</td>
                 <td>@order.OrderDate?.ToShortDateString()</td>
                 <td>@order.TotalPrice.ToString("C")</td>
                 <td>

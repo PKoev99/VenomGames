@@ -31,5 +31,9 @@ namespace VenomGames.Infrastructure.Data.Models
         [Comment("Order entity")]
         public Order Order { get; set; } = null!;
 
+        /// <summary>
+        /// Quantity of ordered items
+        /// </summary>
+        public int Quantity { get; set; }
     }
 }

@@ -45,10 +45,17 @@ namespace VenomGames.Core.Contracts
         Task<bool> RemoveFromCartAsync(string userId, int itemId);
 
         /// <summary>
-        /// Completese the cart order
+        /// Completes the cart order
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<ShoppingCartOutputModel> CompleteOrderAsync(string userId);
+
+        /// <summary>
+        /// Get amount of items in the cart
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<int> GetCartItemCountAsync(string userId);
     }
 }

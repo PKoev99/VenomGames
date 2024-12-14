@@ -1,39 +1,40 @@
 ﻿@model ShoppingCart
 
-@{
-    ViewData["Title"] = "Order Confirmation";
+<h1>Checkout</h1>
+
+<h3>Your Cart</h3>
+@if (Model.Items.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Game</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Game.Title</td> 
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Price * item.Quantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Total Price: @Model.TotalPrice.ToString("C")</h4>
+}
+else
+{
+    <p>Your cart is empty.</p>
 }
 
-<h1>@ViewData["Title"]</h1>
+<form method="post" action="@Url.Action("CompleteOrder", "ShoppingCart")">
+    <button type="submit" class="btn btn-primary">Complete Checkout</button>
+</form>
 
-<p>Thank you for your purchase! Your order has been placed successfully.</p>
-
-<h3>Order Details:</h3>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Game</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>@item.Game.Title</td>
-                <td>@item.Quantity</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>@(item.Quantity * item.Price).ToString("C")</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<h3>Total: @Model.TotalPrice.ToString("C")</h3>
-
-<p>Your order will be processed and shipped soon!</p>
-
-<a class="btn btn-primary" asp-controller="Order" asp-action="Index">Go to My Orders</a>

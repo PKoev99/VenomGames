@@ -6,13 +6,14 @@ using VenomGames.Models.ApplicationUser;
 
 namespace VenomGames.Controllers
 {
-    public class ApplicationUserController : Controller
+    public class ApplicationUserController : BaseController
     {
         private readonly IApplicationUserService userService;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public ApplicationUserController(IApplicationUserService _userService, SignInManager<ApplicationUser> _signInManager, UserManager<ApplicationUser> _userManager)
+        public ApplicationUserController(IApplicationUserService _userService, SignInManager<ApplicationUser> _signInManager, UserManager<ApplicationUser> _userManager, IShoppingCartService _shoppingCartService)
+            : base(_shoppingCartService,_userManager)
         {
             userService = _userService;
             signInManager = _signInManager;
@@ -22,6 +23,8 @@ namespace VenomGames.Controllers
         // GET: /Users
         public async Task<IActionResult> Index()
         {
+            await SetCartItemCountAsync();
+
             IEnumerable<ApplicationUser> users = await userService.GetAllUsersAsync();
             return View(users);
         }

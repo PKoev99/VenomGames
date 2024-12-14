@@ -11,7 +11,7 @@
             <th>Title</th>
             <th>Price</th>
             <th>Description</th>
-            <th>Rating</th>
+            <th>Average Rating</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -43,8 +43,7 @@
                         <input type="hidden" name="gameId" value="@game.GameId" />
                         <button type="submit" class="btn btn-primary">Order</button>
                     </form>
-                    <a href="@Url.Action("Index", "Review", new { id = game.GameId })" class="btn btn-primary">Reviews</a>
-                    <a href="@Url.Action("Create", "Review", new { id = game.GameId })" class="btn btn-primary">Add Review</a>
+                    <a href="@Url.Action("Details", "Game", new { id = game.GameId })" class="btn btn-primary">View Details</a>
                 </td>
             </tr>
         }

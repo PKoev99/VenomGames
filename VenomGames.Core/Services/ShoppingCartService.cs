@@ -1,10 +1,9 @@
-﻿using VenomGames.Core.Contracts;
-using VenomGames.Infrastructure.Data.Models;
-using VenomGames.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using VenomGames.Core.DTOs.ShoppingCart;
+﻿using Microsoft.EntityFrameworkCore;
+using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.CartItem;
+using VenomGames.Core.DTOs.ShoppingCart;
+using VenomGames.Infrastructure.Data;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
 {
@@ -162,6 +161,7 @@ namespace VenomGames.Core.Services
                 OrderDate = DateTime.UtcNow,
                 GameOrders = cart.Items.Select(item => new GameOrder
                 {
+                    Quantity = item.Quantity,
                     GameId = item.GameId
                 }).ToList()
             };
@@ -176,7 +176,7 @@ namespace VenomGames.Core.Services
 
             return new ShoppingCartOutputModel
             {
-                Id = order.Id,
+                Id = cart.Id,
                 TotalPrice = order.TotalPrice,
                 IsCompleted = cart.IsCompleted,
                 OrderDate = order.OrderDate ?? DateTime.UtcNow,
@@ -189,6 +189,15 @@ namespace VenomGames.Core.Services
                     Price = i.Price
                 }).ToList()
             };
+        }
+
+        public async Task<int> GetCartItemCountAsync(string userId)
+        {
+            var cart = await _context.ShoppingCarts
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == userId && !c.IsCompleted);
+
+            return cart?.Items.Sum(item => item.Quantity) ?? 0;
         }
     }
 }

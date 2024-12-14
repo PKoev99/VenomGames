@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Order;
+using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : BaseController
     {
         private readonly IOrderService orderService;
 
-        public OrderController(IOrderService _orderService)
+        public OrderController(IOrderService _orderService, IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
+            :base(_shoppingCartService,_userManager)
         {
             orderService = _orderService;
         }
@@ -17,6 +20,8 @@ namespace VenomGames.Controllers
         // GET: /Orders
         public async Task<IActionResult> Index(GetOrdersQuery query)
         {
+            await SetCartItemCountAsync();
+
             IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersAsync(query);
             return View(orders);
         }
@@ -24,12 +29,29 @@ namespace VenomGames.Controllers
         // GET: /Orders/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
+            var order = await orderService.GetOrderDetailsAsync(id);
+
             if (order == null)
             {
                 return NotFound();
             }
-            return View(order);
+
+            var orderOutputModel = new OrderOutputModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                Username = order.Username,
+                TotalPrice = order.TotalPrice,
+                OrderDate = order.OrderDate,
+                GameOrders = order.GameOrders.Select(go => new OrderItemDTO
+                {
+                    GameName = go.GameName,
+                    Price = go.Price,
+                    Quantity = go.Quantity
+                }).ToList()
+            };
+
+            return View(orderOutputModel);
         }
 
         // GET: /Orders/Create

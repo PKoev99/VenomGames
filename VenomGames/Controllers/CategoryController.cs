@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Category;
 using VenomGames.Core.Services;
@@ -6,19 +7,21 @@ using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService categoryService;
 
-        public CategoryController(ICategoryService _categoryService)
+        public CategoryController(ICategoryService _categoryService, IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
+            :base(_shoppingCartService,_userManager)
         {
             categoryService = _categoryService;
         }
 
-        // GET: /Category
         // GET: Category
         public async Task<IActionResult> Index()
         {
+            await SetCartItemCountAsync();
+
             var categories = await categoryService.GetAllCategoriesAsync();
             return View(categories);
         }

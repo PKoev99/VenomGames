@@ -27,22 +27,23 @@ namespace VenomGames.Core.Services
         {
             IQueryable<Order> orders = context.Orders;
 
+            // Applying filters based on the query parameters
             string? userId = query.UserId;
             if (!userId.IsNullOrEmpty())
             {
-                orders = orders.Where(o => o.UserId==userId);
+                orders = orders.Where(o => o.UserId == userId);
             }
 
             int? gameId = query.GameId;
             if (gameId.HasValue)
             {
-                orders = orders.Where(o => o.GameOrders.Any(g=>g.Game.Id==gameId));
+                orders = orders.Where(o => o.GameOrders.Any(g => g.Game.Id == gameId));
             }
 
             int? categoryId = query.CategoryId;
             if (categoryId.HasValue)
             {
-                orders = orders.Where(o => o.GameOrders.Any(g => g.Order.Id==categoryId));
+                orders = orders.Where(o => o.GameOrders.Any(g => g.Game.GameCategories.Any(c => c.CategoryId == categoryId)));
             }
 
             DateTime? startDate = query.StartDate;
@@ -53,14 +54,20 @@ namespace VenomGames.Core.Services
             }
 
             IEnumerable<OrderOutputModel> ordersOutput = await orders
-                .Select(g => new OrderOutputModel
+                .Select(o => new OrderOutputModel
                 {
-                    Id = g.Id,
-                    OrderDate = g.OrderDate,
-                    TotalPrice = g.TotalPrice,
-                    UserId = g.UserId,
-                    GameOrders = g.GameOrders
-                }).ToListAsync();
+                    Id = o.Id,
+                    OrderDate = o.OrderDate,
+                    TotalPrice = o.TotalPrice,
+                    UserId = o.UserId,
+                    GameOrders = o.GameOrders.Select(go => new OrderItemDTO
+                    {
+                        GameName = go.Game.Title,
+                        Price = go.Game.Price,
+                        Quantity = go.Order.GameOrders.Count()
+                    }).ToList()
+                })
+                .ToListAsync();
 
             return ordersOutput;
 
@@ -76,13 +83,18 @@ namespace VenomGames.Core.Services
         {
             IEnumerable<OrderOutputModel> ordersOutput = await context.Orders
                 .Where(o => o.UserId == userId)
-                .Select(g => new OrderOutputModel
+                .Select(o => new OrderOutputModel
                 {
-                    Id = g.Id,
-                    OrderDate = g.OrderDate,
-                    TotalPrice = g.TotalPrice,
-                    UserId = g.UserId,
-                    GameOrders = g.GameOrders
+                    Id = o.Id,
+                    OrderDate = o.OrderDate,
+                    TotalPrice = o.TotalPrice,
+                    UserId = o.UserId,
+                    GameOrders = o.GameOrders.Select(go => new OrderItemDTO
+                    {
+                        GameName = go.Game.Title,
+                        Price = go.Game.Price,
+                        Quantity = go.Order.GameOrders.Count() 
+                    }).ToList()
                 }).ToListAsync();
 
             return ordersOutput;
@@ -98,11 +110,16 @@ namespace VenomGames.Core.Services
                 .Where(g => g.Id == id)
                 .Select(g => new OrderOutputModel
                 {
-                    Id= g.Id,
+                    Id = g.Id,
                     OrderDate = g.OrderDate,
                     TotalPrice = g.TotalPrice,
                     UserId = g.UserId,
-                    GameOrders = g.GameOrders
+                    GameOrders = g.GameOrders.Select(go => new OrderItemDTO
+                    {
+                        GameName = go.Game.Title,
+                        Price = go.Game.Price,
+                        Quantity = go.Quantity
+                    }).ToList()
                 }).FirstOrDefaultAsync();
 
             if (order == null)

@@ -47,6 +47,29 @@
         <!-- Back Button -->
         <div class="mt-4">
             <a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
+            <a href="@Url.Action("Create", "Review", new { id = Model.GameId })" class="btn btn-primary">Add Review</a>
         </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Content</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model.Reviews)
+                {
+                    <tr>
+                        <td>@review.Rating</td>
+                        <td>@review.Content</td>
+                        <td>@review.UserName</td>
+                        <td>@review.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

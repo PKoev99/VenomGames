@@ -194,30 +194,41 @@ namespace VenomGames.Core.Services
         /// <returns></returns>
         public async Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync()
         {
-            IEnumerable<Game> games = await context.Games
-                .Where(g => g.Reviews.Any(x => x.Rating >= 3))
-                .OrderByDescending(g => g.Reviews.Average(x => x.Rating))
-                .Take(5)
+            // Fetch all games with their reviews and calculate the average rating
+            var games = await context.Games
+                .Where(g => g.Reviews.Any()) // Ensure game has at least one review
+                .Select(g => new
+                {
+                    Game = g,
+                    AverageRating = g.Reviews.Average(r => r.Rating)
+                })
+                .Where(g => g.AverageRating >= 7) // Filter games with average rating above 7
                 .ToListAsync();
 
-            return games.Select(g => new GameOutputModel
+            // Project the result into GameOutputModel
+            var gameOutputModels = games.Select(g => new GameOutputModel
             {
-                GameId = g.Id,
-                Title = g.Title,
-                Price = g.Price,
-                Description = g.Description,
-                GameCategories = g.GameCategories,
-                Reviews = g.Reviews.Select(r => new ReviewOutputModel
+                GameId = g.Game.Id,
+                Title = g.Game.Title,
+                Description = g.Game.Description,
+                Price = g.Game.Price,
+                ImageUrl = g.Game.ImageUrl,
+                AverageRating = g.AverageRating,
+                GameCategories = g.Game.GameCategories,
+                Reviews = g.Game.Reviews.Select(r => new ReviewOutputModel
                 {
                     ReviewId = r.ReviewId,
                     GameId = r.GameId,
+                    GameTitle = r.Game.Title,
+                    UserId = r.UserId,
+                    UserName = r.User.UserName,
                     Content = r.Content,
                     Rating = r.Rating,
-                    UserName = r.User.UserName, // Assuming User navigation property
                     CreatedAt = r.CreatedAt
-                }).ToList(),
-                ImageUrl = g.ImageUrl
-            });
+                }).ToList()
+            }).ToList();
+
+            return gameOutputModels;
         }
 
         /// <summary>

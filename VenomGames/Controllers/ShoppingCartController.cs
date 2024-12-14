@@ -1,24 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using VenomGames.Core.Contracts;
-using VenomGames.Core.DTOs.CartItem;
 using VenomGames.Core.DTOs.ShoppingCart;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
-    public class ShoppingCartController : Controller
+    public class ShoppingCartController : BaseController
     {
-        private readonly IShoppingCartService _shoppingCartService;
+        private readonly IShoppingCartService shoppingCartService;
 
-        public ShoppingCartController(IShoppingCartService shoppingCartService)
+        public ShoppingCartController(IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
+            :base(_shoppingCartService,_userManager)
         {
-            _shoppingCartService = shoppingCartService;
+            shoppingCartService = _shoppingCartService;
         }
 
         // Display cart items
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            await SetCartItemCountAsync();
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
@@ -26,7 +30,7 @@ namespace VenomGames.Controllers
                 return Unauthorized();
             }
 
-            var shoppingCart = await _shoppingCartService.GetShoppingCartAsync(userId);
+            var shoppingCart = await shoppingCartService.GetShoppingCartAsync(userId);
 
             if (shoppingCart == null || !shoppingCart.Items.Any())
             {
@@ -44,8 +48,8 @@ namespace VenomGames.Controllers
 
             if (userId != null)
             {
-                await _shoppingCartService.AddToCartAsync(userId, gameId, 1); // Add 1 quantity
-                return RedirectToAction("Index", "ShoppingCart"); // Redirect to shopping cart page
+                await shoppingCartService.AddToCartAsync(userId, gameId, 1); // Add 1 quantity
+                return RedirectToAction("Index", "Game");
             }
 
             // Redirect to login page if the user is not authenticated
@@ -58,7 +62,7 @@ namespace VenomGames.Controllers
         public async Task<IActionResult> UpdateQuantity(int itemId, int quantity)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _shoppingCartService.AddToCartAsync(userId, itemId, quantity);
+            await shoppingCartService.AddToCartAsync(userId, itemId, quantity);
             return RedirectToAction("Index");
         }
 
@@ -81,7 +85,7 @@ namespace VenomGames.Controllers
                 return Unauthorized();
             }
 
-            var result = await _shoppingCartService.RemoveFromCartAsync(userId, itemId);
+            var result = await shoppingCartService.RemoveFromCartAsync(userId, itemId);
 
             if (!result)
             {
@@ -92,12 +96,6 @@ namespace VenomGames.Controllers
             TempData["SuccessMessage"] = "Item removed successfully!";
             return RedirectToAction("Index");
         }
-
-
-
-
-
-
 
         // Complete order
         [HttpPost]
@@ -112,7 +110,7 @@ namespace VenomGames.Controllers
 
             try
             {
-                var cart = await _shoppingCartService.CompleteOrderAsync(userId);
+                var cart = await shoppingCartService.CompleteOrderAsync(userId);
                 return RedirectToAction("OrderConfirmation", new { orderId = cart.Id });
             }
             catch (Exception ex)
@@ -125,7 +123,7 @@ namespace VenomGames.Controllers
         // Order confirmation
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
-            var cart = await _shoppingCartService.GetShoppingCartAsync(orderId);
+            var cart = await shoppingCartService.GetShoppingCartAsync(orderId);
             return View(cart);
         }
     }

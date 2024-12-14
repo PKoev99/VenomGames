@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Review;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
-    public class ReviewController : Controller
+    public class ReviewController : BaseController
     {
         private readonly IReviewService reviewService;
 
-        public ReviewController(IReviewService _reviewService)
+        public ReviewController(IReviewService _reviewService, IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
+            :base(_shoppingCartService,_userManager)
         {
             reviewService = _reviewService;
         }
@@ -17,6 +20,8 @@ namespace VenomGames.Controllers
         // GET: /Reviews/ByGame/5
         public async Task<IActionResult> Index(int id)
         {
+            await SetCartItemCountAsync();
+
             var reviews = await reviewService.GetReviewsByGameIdAsync(id);
 
             if (!reviews.Any())

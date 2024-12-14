@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Game;
+using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
-    public class GameController : Controller
+    public class GameController : BaseController
     {
         private readonly IGameService gameService;
         private readonly ICategoryService categoryService;
 
-        public GameController(IGameService _gameService, ICategoryService _categoryService)
+        public GameController(IGameService _gameService, ICategoryService _categoryService, UserManager<ApplicationUser> _userManager, IShoppingCartService _shoppingCartService)
+            :base(_shoppingCartService,_userManager)
         {
             gameService = _gameService;
             categoryService = _categoryService;
@@ -20,6 +23,8 @@ namespace VenomGames.Controllers
         // GET: /Games
         public async Task<IActionResult> Index(string searchQuery)
         {
+            await SetCartItemCountAsync();
+
             IEnumerable<GameOutputModel> games;
 
             if (string.IsNullOrEmpty(searchQuery))
