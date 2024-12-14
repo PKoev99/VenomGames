@@ -1,5 +1,6 @@
 using VenomGames.Core.Contracts;
 using VenomGames.Core.Services;
+using VenomGames.Infrastructure.Data.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,12 @@ builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await seeder.SeedAllAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {

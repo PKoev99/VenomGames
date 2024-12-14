@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using VenomGames.Infrastructure.Data.Models;
 
-namespace VenomGames.Infrastructure.Data.Configurations
+namespace VenomGames.Infrastructure.Data.Seeding.Configurations
 {
     public class GameOrderConfiguration : IEntityTypeConfiguration<GameOrder>
     {

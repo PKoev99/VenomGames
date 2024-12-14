@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using VenomGames.Infrastructure.Data.Models;
 using static VenomGames.Infrastructure.Constants.DataConstants;
 
-namespace VenomGames.Infrastructure.Data.Configurations
+namespace VenomGames.Infrastructure.Data.Seeding.Configurations
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
@@ -14,7 +14,7 @@ namespace VenomGames.Infrastructure.Data.Configurations
                 .HasKey(c => c.CategoryId);
 
             builder.Property(c => c.CategoryId)
-                .UseIdentityColumn(1,1);
+                .UseIdentityColumn(1, 1);
 
             builder
                 .Property(g => g.Name)

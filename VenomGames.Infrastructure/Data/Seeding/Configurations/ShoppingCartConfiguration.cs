@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Emit;
 using VenomGames.Infrastructure.Data.Models;
 
-namespace VenomGames.Infrastructure.Data.Configurations
+namespace VenomGames.Infrastructure.Data.Seeding.Configurations
 {
     public class ShoppingCartConfiguration : IEntityTypeConfiguration<ShoppingCart>
     {

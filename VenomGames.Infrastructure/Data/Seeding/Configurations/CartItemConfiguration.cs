@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace VenomGames.Infrastructure.Data.Configurations
+namespace VenomGames.Infrastructure.Data.Seeding.Configurations
 {
     internal class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
     {
@@ -31,7 +31,7 @@ namespace VenomGames.Infrastructure.Data.Configurations
             builder.HasIndex(x => x.GameId);
 
             builder
-                .Property(ci=>ci.Price)
+                .Property(ci => ci.Price)
                 .HasColumnType("decimal(18,2)");
         }
     }

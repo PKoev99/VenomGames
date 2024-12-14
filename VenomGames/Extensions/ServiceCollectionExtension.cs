@@ -4,6 +4,7 @@ using VenomGames.Core.Contracts;
 using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
+using VenomGames.Infrastructure.Data.Seeding;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -20,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
+            services.AddTransient<DataSeeder>();
             services.AddHttpContextAccessor();
 
             return services;
