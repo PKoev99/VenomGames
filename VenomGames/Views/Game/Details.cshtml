@@ -4,29 +4,24 @@
     <h2 class="mb-4">Game Details</h2>
 
     <div class="card shadow-sm p-4">
-        <!-- Game Title -->
         <div class="mb-3">
             <h3 class="card-title">@Model.Title</h3>
         </div>
 
-        <!-- Game Image -->
         <div class="mb-3">
             <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" style="max-width: 300px;">
         </div>
 
-        <!-- Game Description -->
         <div class="mb-3">
             <label class="fw-bold">Description:</label>
             <p>@Model.Description</p>
         </div>
 
-        <!-- Game Price -->
         <div class="mb-3">
             <label class="fw-bold">Price:</label>
             <p>@Model.Price.ToString("C")</p>
         </div>
 
-        <!-- Game Categories -->
         <div class="mb-3">
             <label class="fw-bold">Categories:</label>
             @if (Model.GameCategories != null && Model.GameCategories.Any())
@@ -44,7 +39,6 @@
             }
         </div>
 
-        <!-- Back Button -->
         <div class="mt-4">
             <a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
             <a href="@Url.Action("Create", "Review", new { id = Model.GameId })" class="btn btn-primary">Add Review</a>

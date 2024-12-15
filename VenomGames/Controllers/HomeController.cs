@@ -55,8 +55,6 @@ namespace VenomGames.Controllers
             return View(viewModel);
         }
 
-
-        // GET: /Home/Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("Home/Error/{statusCode}")]
         public IActionResult Error(int statusCode)
@@ -70,7 +68,6 @@ namespace VenomGames.Controllers
                 return View("500ServerError");
             }
 
-            // Generic error fallback
             var model = new ErrorViewModel
             {
                 RequestId = HttpContext.TraceIdentifier

@@ -20,7 +20,6 @@ namespace VenomGames.Controllers
             userManager = _userManager;
         }
 
-        // GET: /Users
         public async Task<IActionResult> Index()
         {
             await SetCartItemCountAsync();
@@ -110,8 +109,6 @@ namespace VenomGames.Controllers
             }
         }
 
-
-        // GET: /Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
             ApplicationUser? user = await userService.GetUserByIdAsync(id);
@@ -122,7 +119,6 @@ namespace VenomGames.Controllers
             return View(user);
         }
 
-        // GET: /Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             ApplicationUser? user = await userService.GetUserByIdAsync(id);
@@ -133,7 +129,6 @@ namespace VenomGames.Controllers
             return View(user);
         }
 
-        // POST: /Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, ApplicationUser user)
@@ -151,7 +146,6 @@ namespace VenomGames.Controllers
             return View(user);
         }
 
-        // GET: /Users/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             ApplicationUser? user = await userService.GetUserByIdAsync(id);
@@ -162,7 +156,6 @@ namespace VenomGames.Controllers
             return View(user);
         }
 
-        // POST: /Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -171,7 +164,6 @@ namespace VenomGames.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Users/ByEmail
         public async Task<IActionResult> GetByEmail(string email)
         {
             ApplicationUser? user = await userService.GetUserByEmailAsync(email);

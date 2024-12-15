@@ -16,7 +16,6 @@ namespace VenomGames.Controllers
             orderService = _orderService;
         }
 
-        // GET: /Orders
         public async Task<IActionResult> Index()
         {
             await SetCartItemCountAsync();
@@ -25,7 +24,6 @@ namespace VenomGames.Controllers
             return View(orders);
         }
 
-        // GET: /Orders/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var order = await orderService.GetOrderDetailsAsync(id);
@@ -53,13 +51,11 @@ namespace VenomGames.Controllers
             return View(orderOutputModel);
         }
 
-        // GET: /Orders/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OrderCreateDTO order)
@@ -72,7 +68,6 @@ namespace VenomGames.Controllers
             return View(order);
         }
 
-        // GET: /Orders/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
@@ -83,7 +78,6 @@ namespace VenomGames.Controllers
             return View(order);
         }
 
-        // POST: /Orders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, OrderUpdateDTO order)
@@ -101,7 +95,6 @@ namespace VenomGames.Controllers
             return View(order);
         }
 
-        // GET: /Orders/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             OrderOutputModel? order = await orderService.GetOrderDetailsAsync(id);
@@ -112,7 +105,6 @@ namespace VenomGames.Controllers
             return View(order);
         }
 
-        // POST: /Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

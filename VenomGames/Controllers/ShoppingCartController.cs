@@ -17,7 +17,6 @@ namespace VenomGames.Controllers
             shoppingCartService = _shoppingCartService;
         }
 
-        // Display cart items
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -44,20 +43,17 @@ namespace VenomGames.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(int gameId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the user ID
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId != null)
             {
-                await shoppingCartService.AddToCartAsync(userId, gameId, 1); // Add 1 quantity
+                await shoppingCartService.AddToCartAsync(userId, gameId, 1);
                 return RedirectToAction("Index", "Game");
             }
 
-            // Redirect to login page if the user is not authenticated
             return RedirectToAction("Login", "Account");
         }
 
-
-        // Update quantity
         [HttpPost]
         public async Task<IActionResult> UpdateQuantity(int itemId, int quantity)
         {
@@ -66,7 +62,6 @@ namespace VenomGames.Controllers
             return RedirectToAction("Index");
         }
 
-        // Remove item from cart
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCart(int itemId)
@@ -74,7 +69,6 @@ namespace VenomGames.Controllers
             Console.WriteLine("Received Item ID: " + itemId);
             if (itemId == 0)
             {
-                // Handle the case where the ID is not valid
                 TempData["ErrorMessage"] = "Invalid item ID.";
                 return RedirectToAction("Index");
             }
@@ -97,7 +91,6 @@ namespace VenomGames.Controllers
             return RedirectToAction("Index");
         }
 
-        // Complete order
         [HttpPost]
         public async Task<IActionResult> CompleteOrder()
         {
@@ -120,7 +113,6 @@ namespace VenomGames.Controllers
             }
         }
 
-        // Order confirmation
         public async Task<IActionResult> OrderConfirmation(int orderId)
         {
             var cart = await shoppingCartService.GetShoppingCartAsync(orderId);

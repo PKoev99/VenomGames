@@ -18,7 +18,6 @@ namespace VenomGames.Controllers
             categoryService = _categoryService;
         }
 
-        // GET: Category
         public async Task<IActionResult> Index()
         {
             await SetCartItemCountAsync();
@@ -27,12 +26,11 @@ namespace VenomGames.Controllers
             return View(categories);
         }
 
-        // GET: /Category/Create
         public IActionResult Create()
         {
             return View();
         }
-        // POST: Category/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateDTO category)
@@ -45,7 +43,6 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // GET: Category/Edit/{id}
         public async Task<IActionResult> Edit(int id)
        {
             var category = await categoryService.GetCategoryDetailsAsync(id);
@@ -56,7 +53,6 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // POST: Category/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryUpdateDTO category)
@@ -74,7 +70,6 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // GET: /Category/Details/5
         public async Task<IActionResult> Details(int id)
         {
             CategoryOutputModel? category = await categoryService.GetCategoryDetailsAsync(id);
@@ -85,7 +80,6 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // GET: Category/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             var category = await categoryService.GetCategoryDetailsAsync(id);
@@ -96,7 +90,6 @@ namespace VenomGames.Controllers
             return View(category);
         }
 
-        // POST: Category/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

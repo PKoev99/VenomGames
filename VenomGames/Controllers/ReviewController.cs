@@ -17,7 +17,6 @@ namespace VenomGames.Controllers
             reviewService = _reviewService;
         }
 
-        // GET: /Reviews/ByGame/5
         public async Task<IActionResult> Index(int id)
         {
             await SetCartItemCountAsync();
@@ -32,7 +31,6 @@ namespace VenomGames.Controllers
             return View(reviews);
         }
 
-        // GET: /Reviews/Details/5
         public async Task<IActionResult> Details(int id)
         {
             ReviewOutputModel? review = await reviewService.GetReviewDetailsAsync(id);
@@ -48,7 +46,7 @@ namespace VenomGames.Controllers
         {
             var model = new ReviewCreateDTO
             {
-                GameId = id // Automatically link this review to the game
+                GameId = id
             };
 
             return View(model);
@@ -60,15 +58,12 @@ namespace VenomGames.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Get the current user's ID
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId == null)
                 {
-                    // Handle case where no user is logged in
                     return Unauthorized();
                 }
 
-                // Pass the userId to the service
                 await reviewService.CreateReviewAsync(model, userId);
                 return RedirectToAction("Index", "Review", new { id = model.GameId });
             }
@@ -76,7 +71,6 @@ namespace VenomGames.Controllers
             return View(model);
         }
 
-        // GET: /Reviews/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             ReviewOutputModel? review = await reviewService.GetReviewDetailsAsync(id);
@@ -87,7 +81,6 @@ namespace VenomGames.Controllers
             return View(review);
         }
 
-        // POST: /Reviews/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ReviewUpdateDTO review)
@@ -105,7 +98,6 @@ namespace VenomGames.Controllers
             return View(review);
         }
 
-        // GET: /Reviews/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             ReviewOutputModel? review = await reviewService.GetReviewDetailsAsync(id);
@@ -116,7 +108,6 @@ namespace VenomGames.Controllers
             return View(review);
         }
 
-        // POST: /Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
