@@ -41,7 +41,10 @@
 
         <div class="mt-4">
             <a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
-            <a href="@Url.Action("Create", "Review", new { id = Model.GameId })" class="btn btn-primary">Add Review</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="@Url.Action("Create", "Review", new { id = Model.GameId })" class="btn btn-primary">Add Review</a>
+            }
             @if (User.Identity.IsAuthenticated)
             {
                 <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post" style="display:inline;">
