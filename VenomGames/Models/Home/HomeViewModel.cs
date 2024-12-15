@@ -1,7 +1,5 @@
 ﻿using VenomGames.Core.DTOs.Category;
 using VenomGames.Core.DTOs.Game;
-using VenomGames.Models.Category;
-using VenomGames.Models.Game;
 
 namespace VenomGames.Models.Home
 {

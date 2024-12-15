@@ -12,7 +12,7 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all reviews.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync(GetReviewsQuery query);
+        Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync();
 
         /// <summary>
         /// Retrieves all reviews for a specific game.

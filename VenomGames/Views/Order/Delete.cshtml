@@ -1,4 +1,4 @@
-﻿@model OrderViewModel
+﻿@model OrderOutputModel
 
 @{
     ViewData["Title"] = "Delete Order";
@@ -6,8 +6,8 @@
 
 <h1>Delete Order</h1>
 
-<p><strong>User:</strong> @Model.UserName</p>
-<p><strong>Order Date:</strong> @Model.OrderDate.ToShortDateString()</p>
+<p><strong>User:</strong> @Model.Username</p>
+<p><strong>Order Date:</strong> @Model.OrderDate</p>
 <p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
 
 <h3>Items</h3>
@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.OrderItems)
+        @foreach (var item in Model.GameOrders)
         {
             <tr>
                 <td>@item.GameName</td>

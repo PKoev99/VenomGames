@@ -1,4 +1,4 @@
-﻿@model ReviewViewModel
+﻿@model ReviewOutputModel
 
 @{
     ViewData["Title"] = "Edit Review";
@@ -7,7 +7,7 @@
 <h1>Edit Review</h1>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ReviewId" />
     <div class="form-group">
         <label for="GameId">Game</label>
         <select asp-for="GameId" asp-items="ViewBag.Games" class="form-control" disabled></select>

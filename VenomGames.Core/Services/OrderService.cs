@@ -23,35 +23,9 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Searches for orders from the database.
         /// </summary>
-        public async Task<IEnumerable<OrderOutputModel>> GetOrdersAsync(GetOrdersQuery query)
+        public async Task<IEnumerable<OrderOutputModel>> GetOrdersAsync()
         {
             IQueryable<Order> orders = context.Orders;
-
-            // Applying filters based on the query parameters
-            string? userId = query.UserId;
-            if (!userId.IsNullOrEmpty())
-            {
-                orders = orders.Where(o => o.UserId == userId);
-            }
-
-            int? gameId = query.GameId;
-            if (gameId.HasValue)
-            {
-                orders = orders.Where(o => o.GameOrders.Any(g => g.Game.Id == gameId));
-            }
-
-            int? categoryId = query.CategoryId;
-            if (categoryId.HasValue)
-            {
-                orders = orders.Where(o => o.GameOrders.Any(g => g.Game.GameCategories.Any(c => c.CategoryId == categoryId)));
-            }
-
-            DateTime? startDate = query.StartDate;
-            DateTime? endDate = query.EndDate;
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                orders = orders.Where(o => o.OrderDate >= startDate.Value.Date && o.OrderDate <= endDate.Value.Date);
-            }
 
             IEnumerable<OrderOutputModel> ordersOutput = await orders
                 .Select(o => new OrderOutputModel

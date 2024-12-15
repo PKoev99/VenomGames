@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Order;
-using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
@@ -18,11 +17,11 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Orders
-        public async Task<IActionResult> Index(GetOrdersQuery query)
+        public async Task<IActionResult> Index()
         {
             await SetCartItemCountAsync();
 
-            IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersAsync(query);
+            IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersAsync();
             return View(orders);
         }
 

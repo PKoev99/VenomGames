@@ -13,7 +13,7 @@ namespace VenomGames.Core.Contracts
         /// Retrieves all orders placed by users.
         /// </summary>
         /// <returns>List of all orders.</returns>
-        Task<IEnumerable<OrderOutputModel>> GetOrdersAsync(GetOrdersQuery queery);
+        Task<IEnumerable<OrderOutputModel>> GetOrdersAsync();
 
         /// <summary>
         /// Retrieves all orders placed by a specific user.

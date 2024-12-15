@@ -23,35 +23,9 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Searches for reviews from the database.
         /// </summary>
-        public async Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync(GetReviewsQuery query)
+        public async Task<IEnumerable<ReviewOutputModel>> GetReviewsAsync()
         {
             IQueryable<Review> reviews = context.Reviews;
-
-            int? gameId = query.GameId;
-            if (gameId.HasValue)
-            {
-                reviews = reviews.Where(r => r.GameId == gameId);
-            }
-
-            string? userId = query.UserId;
-            if (!userId.IsNullOrEmpty())
-            {
-                reviews = reviews.Where(r => r.UserId == userId);
-            }
-
-
-            decimal? rating = query.Rating;
-            if (rating.HasValue)
-            {
-                reviews = reviews.Where(r => r.Rating == rating);
-            }
-
-            DateTime? startDate = query.StartDate;
-            DateTime? endDate = query.EndDate;
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                reviews = reviews.Where(o => o.CreatedAt >= startDate.Value.Date && o.CreatedAt <= endDate.Value.Date);
-            }
 
             IEnumerable<ReviewOutputModel> reviewsOutput = await reviews
                 .Select(r => new ReviewOutputModel
