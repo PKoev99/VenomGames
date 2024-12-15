@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Category;
-using VenomGames.Core.Services;
 using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService categoryService;

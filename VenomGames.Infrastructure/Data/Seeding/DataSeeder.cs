@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using VenomGames.Infrastructure.Data.Models;
+using VenomGames.Infrastructure.Data.Seeding.Admin;
 
 namespace VenomGames.Infrastructure.Data.Seeding
 {
@@ -9,48 +10,72 @@ namespace VenomGames.Infrastructure.Data.Seeding
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ApplicationDbContext context;
-        
-        public DataSeeder(UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManager, ApplicationDbContext _context)
+        private readonly ILogger<DataSeeder> logger;
+
+        public DataSeeder(UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManager, ApplicationDbContext _context, ILogger<DataSeeder> _logger)
         {
             userManager = _userManager;
             roleManager = _roleManager;
             context = _context;
+            logger = _logger;
         }
 
+        /// <summary>
+        /// Seeds roles into the database.
+        /// </summary>
         public async Task SeedRolesAsync()
         {
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            if (!await roleManager.RoleExistsAsync(AdminUser.AdminRoleName))
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
-
-            if (!await roleManager.RoleExistsAsync("User"))
-            {
-                await roleManager.CreateAsync(new IdentityRole("User"));
+                var roleResult = await roleManager.CreateAsync(new IdentityRole(AdminUser.AdminRoleName));
+                if (roleResult.Succeeded)
+                {
+                    logger.LogInformation($"Role '{AdminUser.AdminRoleName}' created successfully.");
+                }
+                else
+                {
+                    logger.LogError($"Failed to create role '{AdminUser.AdminRoleName}': {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+                }
             }
         }
 
+        /// <summary>
+        /// Seeds the admin user into the database.
+        /// </summary>
         public async Task SeedAdminAsync()
         {
-            var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
+            var adminUser = await userManager.FindByEmailAsync(AdminUser.AdminEmail);
 
             if (adminUser == null)
             {
                 adminUser = new ApplicationUser
                 {
-                    UserName = "admin@admin.com",
-                    Email = "admin@admin.com"
+                    UserName = AdminUser.AdminEmail,
+                    Email = AdminUser.AdminEmail,
+                    EmailConfirmed = true
                 };
 
                 var result = await userManager.CreateAsync(adminUser, "AdminPassword123!");
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
+                    await userManager.AddToRoleAsync(adminUser, AdminUser.AdminRoleName);
+                    logger.LogInformation("Admin user created and assigned to role successfully.");
                 }
+                else
+                {
+                    logger.LogError($"Failed to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+            else
+            {
+                logger.LogInformation("Admin user already exists.");
             }
         }
 
+        /// <summary>
+        /// Seeds default categories into the database.
+        /// </summary>
         public async Task SeedCategoriesAsync()
         {
             if (!context.Categories.Any())
@@ -76,11 +101,15 @@ namespace VenomGames.Infrastructure.Data.Seeding
                 new Category { Name = "Fighting" }
                 };
 
+
                 context.Categories.AddRange(categories);
                 await context.SaveChangesAsync();
             }
         }
 
+        /// <summary>
+        /// Seeds default categories into the database.
+        /// </summary>
         public async Task SeedGamesAsync()
         {
             if (!context.Games.Any())
@@ -114,6 +143,9 @@ namespace VenomGames.Infrastructure.Data.Seeding
             }
         }
 
+        /// <summary>
+        /// Seeds default connections between games and categories into the database.
+        /// </summary>
         public async Task SeedGameCategoriesAsync()
         {
             if (!context.GameCategories.Any())
@@ -214,6 +246,8 @@ namespace VenomGames.Infrastructure.Data.Seeding
 
             public async Task SeedAllAsync()
         {
+            await SeedRolesAsync();
+            await SeedAdminAsync();
             await SeedCategoriesAsync();
             await SeedGamesAsync();
             await SeedGameCategoriesAsync();

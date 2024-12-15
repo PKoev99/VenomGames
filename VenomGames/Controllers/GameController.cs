@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VenomGames.Core.Common.Exceptions;
@@ -55,6 +56,7 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Games/Create
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create()
         {
             var categories = await categoryService.GetAllCategoriesAsync();
@@ -70,6 +72,7 @@ namespace VenomGames.Controllers
         // POST: /Games/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(GameCreateDTO game)
         {
             if (ModelState.IsValid)
@@ -90,6 +93,7 @@ namespace VenomGames.Controllers
         }
 
         // GET: Game/Edit/{id}
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id)
         {
             var game = await gameService.GetGameDetailsAsync(id);
@@ -117,6 +121,7 @@ namespace VenomGames.Controllers
         // POST: Game/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, GameUpdateDTO gameUpdateDTO)
         {
             if (id != gameUpdateDTO.Id)  // Ensure the ID in the URL matches the one from the form
@@ -153,6 +158,7 @@ namespace VenomGames.Controllers
 
 
         // GET: /Games/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int id)
         {
             var game = await gameService.GetGameDetailsAsync(id);
@@ -164,6 +170,7 @@ namespace VenomGames.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed([FromForm] int id)
         {
             try

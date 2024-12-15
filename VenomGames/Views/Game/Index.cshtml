@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<GameOutputModel>
 
 <h2>Games</h2>
-
-<a href="@Url.Action("Create", "Game")" class="btn btn-success">Create New Game</a>
-
+@if (User.IsInRole("Administrator"))
+{
+    <a href="@Url.Action("Create", "Game")" class="btn btn-success">Create New Game</a>
+}
 <table class="table">
     <thead>
         <tr>
@@ -36,13 +37,22 @@
                     }
                 </td>
                 <td>
-                    <a href="@Url.Action("Edit", "Game", new { id = game.GameId })" class="btn btn-primary">Edit</a>
-                    <a href="@Url.Action("Delete", "Game", new { id = game.GameId })" class="btn btn-danger">Delete</a>
-
-                    <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post" style="display:inline;">
-                        <input type="hidden" name="gameId" value="@game.GameId" />
-                        <button type="submit" class="btn btn-primary">Order</button>
-                    </form>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <a href="@Url.Action("Edit", "Game", new { id = game.GameId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Delete", "Game", new { id = game.GameId })" class="btn btn-danger">Delete</a>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post" style="display:inline;">
+                            <input type="hidden" name="gameId" value="@game.GameId" />
+                            <button type="submit" class="btn btn-primary">Order</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Login", "ApplicationUser", new { returnUrl = Url.Action("Index", "Game") })" class="btn btn-primary">Order</a>
+                    }
                     <a href="@Url.Action("Details", "Game", new { id = game.GameId })" class="btn btn-primary">View Details</a>
                 </td>
             </tr>
