@@ -47,7 +47,7 @@ namespace VenomGames.Core.Services
                         GameId = r.GameId,
                         Content = r.Content,
                         Rating = r.Rating,
-                        UserName = r.User.UserName, // Assuming User navigation property
+                        UserName = r.User.UserName,
                         CreatedAt = r.CreatedAt
                     }).ToList(),
                     ImageUrl = g.ImageUrl
@@ -56,6 +56,12 @@ namespace VenomGames.Core.Services
             return gamesOutput;
 
         }
+
+        /// <summary>
+        /// Get the amount of all games. 
+        /// </summary>
+        /// <param name="searchQuery"></param>
+        /// <returns></returns>
         public async Task<int> GetTotalGamesAsync(string searchQuery)
         {
             var games = context.Games.AsQueryable();
@@ -76,7 +82,7 @@ namespace VenomGames.Core.Services
         public async Task<IEnumerable<GameOutputModel>> GetAllGamesAsync()
         {
             var games = await context.Games
-                .Include(g => g.Reviews) // Include reviews from the database
+                .Include(g => g.Reviews)
                 .Select(g => new GameOutputModel
                 {
                     GameId = g.Id,
@@ -84,14 +90,14 @@ namespace VenomGames.Core.Services
                     Price = g.Price,
                     Description = g.Description,
                     ImageUrl = g.ImageUrl,
-                    AverageRating = g.Reviews.Any() ? g.Reviews.Average(r => r.Rating) : 0, // Calculate average rating
+                    AverageRating = g.Reviews.Any() ? g.Reviews.Average(r => r.Rating) : 0,
                     Reviews = g.Reviews.Select(r => new ReviewOutputModel
                     {
                         ReviewId = r.ReviewId,
                         GameId = r.GameId,
                         Content = r.Content,
                         Rating = r.Rating,
-                        UserName = r.User.UserName, // Assuming User navigation property
+                        UserName = r.User.UserName,
                         CreatedAt = r.CreatedAt
                     }).ToList()
                 })
@@ -123,7 +129,7 @@ namespace VenomGames.Core.Services
                             GameId = r.GameId,
                             Content = r.Content,
                             Rating = r.Rating,
-                            UserName = r.User.UserName, // Assuming User navigation property
+                            UserName = r.User.UserName,
                             CreatedAt = r.CreatedAt
                         }).ToList(),
                     })
@@ -150,7 +156,6 @@ namespace VenomGames.Core.Services
                 ImageUrl = game.ImageUrl
             };
 
-            // Add relationships with the selected categories
             foreach (var categoryId in game.SelectedCategoryIds)
             {
                 newGame.GameCategories.Add(new GameCategory
@@ -205,18 +210,16 @@ namespace VenomGames.Core.Services
         /// <returns></returns>
         public async Task<IEnumerable<GameOutputModel>> GetFeaturedGamesAsync()
         {
-            // Fetch all games with their reviews and calculate the average rating
             var games = await context.Games
-                .Where(g => g.Reviews.Any()) // Ensure game has at least one review
+                .Where(g => g.Reviews.Any())
                 .Select(g => new
                 {
                     Game = g,
                     AverageRating = g.Reviews.Average(r => r.Rating)
                 })
-                .Where(g => g.AverageRating >= 7) // Filter games with average rating above 7
+                .Where(g => g.AverageRating >= 7)
                 .ToListAsync();
 
-            // Project the result into GameOutputModel
             var gameOutputModels = games.Select(g => new GameOutputModel
             {
                 GameId = g.Game.Id,
@@ -264,7 +267,7 @@ namespace VenomGames.Core.Services
                         GameId = r.GameId,
                         Content = r.Content,
                         Rating = r.Rating,
-                        UserName = r.User.UserName, // Assuming User navigation property
+                        UserName = r.User.UserName,
                         CreatedAt = r.CreatedAt
                     }).ToList(),
                     ImageUrl = g.ImageUrl

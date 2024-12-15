@@ -96,7 +96,7 @@ namespace VenomGames.Core.Services
             var review = new Review
             {
                 GameId = model.GameId,
-                UserId = userId, // Set the current user's ID
+                UserId = userId,
                 Content = model.Content,
                 Rating = model.Rating,
                 CreatedAt = DateTime.UtcNow

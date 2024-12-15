@@ -7,6 +7,9 @@ using VenomGames.Infrastructure.Data.Models;
 
 namespace VenomGames.Core.Services
 {
+    /// <summary>
+    /// Service for managing the shopping cart
+    /// </summary>
     public class ShoppingCartService : IShoppingCartService
     {
         private readonly ApplicationDbContext _context;
@@ -16,7 +19,11 @@ namespace VenomGames.Core.Services
             _context = context;
         }
 
-        // Get shopping cart by user ID
+        /// <summary>
+        /// Gets the shopping cart by user Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<ShoppingCartOutputModel> GetShoppingCartAsync(string userId)
         {
             var cart = await _context.ShoppingCarts
@@ -44,7 +51,11 @@ namespace VenomGames.Core.Services
 
         }
 
-        // Get shopping cart by order ID (for confirmation)
+        /// <summary>
+        /// Get the shopping cart by order Id
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         public async Task<ShoppingCart> GetShoppingCartAsync(int orderId)
         {
             return await _context.ShoppingCarts
@@ -54,7 +65,13 @@ namespace VenomGames.Core.Services
                 .FirstOrDefaultAsync();
         }
 
-        // Add an item to the shopping cart
+        /// <summary>
+        /// Adds an item to the cart
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="gameId"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public async Task AddToCartAsync(string userId, int gameId, int quantity)
         {
             var cart = await _context.ShoppingCarts
@@ -63,7 +80,6 @@ namespace VenomGames.Core.Services
 
             if (cart == null)
             {
-                // Create a new cart if none exists
                 cart = new ShoppingCart
                 {
                     UserId = userId,
@@ -77,7 +93,6 @@ namespace VenomGames.Core.Services
             var cartItem = cart.Items.FirstOrDefault(ci => ci.GameId == gameId);
             if (cartItem == null)
             {
-                // Add new item to the cart
                 cartItem = new CartItem
                 {
                     GameId = gameId,
@@ -89,16 +104,20 @@ namespace VenomGames.Core.Services
             }
             else
             {
-                // Update quantity if the game is already in the cart
                 cartItem.Quantity += quantity;
             }
 
-            cart.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity); // Update total price
-            await _context.SaveChangesAsync(); // Persist changes
+            cart.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
+            await _context.SaveChangesAsync();
         }
 
-
-        // Update the quantity of an item in the cart
+        /// <summary>
+        /// Updates item quantity in cart.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="itemId"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
         public async Task UpdateCartItemQuantityAsync(string userId, int itemId, int quantity)
         {
             var cartItem = await _context.CartItems.FindAsync(itemId);
@@ -111,7 +130,12 @@ namespace VenomGames.Core.Services
             }
         }
 
-        // Remove an item from the shopping cart
+        /// <summary>
+        /// Removes an item from the cart.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveFromCartAsync(string userId, int itemId)
         {
             var cart = await _context.ShoppingCarts
@@ -138,9 +162,12 @@ namespace VenomGames.Core.Services
             return true;
         }
 
-
-
-        // Complete the order and mark the cart as completed
+        /// <summary>
+        /// Completes the cart into an order.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<ShoppingCartOutputModel> CompleteOrderAsync(string userId)
         {
             var cart = await _context.ShoppingCarts
@@ -153,7 +180,6 @@ namespace VenomGames.Core.Services
                 throw new InvalidOperationException("Cannot complete an empty cart.");
             }
 
-            // Create a new order
             var order = new Order
             {
                 UserId = userId,
@@ -168,7 +194,6 @@ namespace VenomGames.Core.Services
 
             _context.Orders.Add(order);
 
-            // Mark cart as completed
             cart.IsCompleted = true;
             cart.OrderDate = DateTime.UtcNow;
 
@@ -191,6 +216,11 @@ namespace VenomGames.Core.Services
             };
         }
 
+        /// <summary>
+        /// Get the amount of items in the cart.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<int> GetCartItemCountAsync(string userId)
         {
             var cart = await _context.ShoppingCarts
