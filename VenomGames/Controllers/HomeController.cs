@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VenomGames.Core.Contracts;
 using VenomGames.Infrastructure.Data.Models;
+using VenomGames.Models;
 using VenomGames.Models.Home;
 
 namespace VenomGames.Controllers
@@ -14,7 +15,7 @@ namespace VenomGames.Controllers
         private readonly UserManager<ApplicationUser> userManager;
 
         public HomeController(IGameService _gameService, ICategoryService _categoryService, IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
-            :base(_shoppingCartService,_userManager)
+            : base(_shoppingCartService, _userManager)
         {
             gameService = _gameService;
             categoryService = _categoryService;
@@ -57,9 +58,24 @@ namespace VenomGames.Controllers
 
         // GET: /Home/Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [Route("Home/Error/{statusCode}")]
+        public IActionResult Error(int statusCode)
         {
-            return View();
+            if (statusCode == 404)
+            {
+                return View("404NotFound");
+            }
+            else if (statusCode == 500)
+            {
+                return View("500ServerError");
+            }
+
+            // Generic error fallback
+            var model = new ErrorViewModel
+            {
+                RequestId = HttpContext.TraceIdentifier
+            };
+            return View("Error", model);
         }
     }
 }

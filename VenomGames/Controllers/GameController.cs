@@ -22,26 +22,41 @@ namespace VenomGames.Controllers
         }
 
         // GET: /Games
-        public async Task<IActionResult> Index(string searchQuery)
+        public async Task<IActionResult> Index(int page = 1, string searchQuery = "")
         {
             await SetCartItemCountAsync();
 
-            IEnumerable<GameOutputModel> games;
+            // Define how many games per page
+            const int pageSize = 10;
 
-            if (string.IsNullOrEmpty(searchQuery))
+            // Get all games
+            var games = await gameService.GetAllGamesAsync();
+
+            // Apply search query filter if provided
+            if (!string.IsNullOrEmpty(searchQuery))
             {
-                // If no search query, show all games
-                games = await gameService.GetAllGamesAsync();
-            }
-            else
-            {
-                // If there's a search query, filter the games
-                games = await gameService.GetAllGamesAsync();
                 games = games.Where(game => game.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                                             game.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+                                             game.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            return View(games);
+            // Get the total number of games
+            var totalGames = games.Count();
+
+            // Calculate total pages
+            var totalPages = (int)Math.Ceiling(totalGames / (double)pageSize);
+
+            // Get the games for the current page
+            var gamesOnCurrentPage = games.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var model = new GameIndexOutputModel
+            {
+                Games = gamesOnCurrentPage,
+                CurrentPage = page,
+                TotalPages = totalPages,
+                SearchQuery = searchQuery
+            };
+
+            return View(model);
         }
 
         // GET: /Games/Details/5

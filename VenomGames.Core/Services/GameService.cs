@@ -24,14 +24,13 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Searches for games from the database.
         /// </summary>
-        public async Task<IEnumerable<GameOutputModel>> GetGamesAsync(GetGamesQuery query)
+        public async Task<IEnumerable<GameOutputModel>> GetGamesAsync(int page, int pageSize, string searchQuery)
         {
             IQueryable<Game> games = context.Games;
 
-            string? gameTitle = query.Title;
-            if (!gameTitle.IsNullOrEmpty())
+            if (!searchQuery.IsNullOrEmpty())
             {
-                games = games.Where(g => g.Title.Contains(gameTitle!));
+                games = games.Where(g => g.Title.Contains(searchQuery) || g.Description.Contains(searchQuery));
             }
 
             IEnumerable<GameOutputModel> gamesOutput = await games
@@ -57,6 +56,18 @@ namespace VenomGames.Core.Services
             return gamesOutput;
 
         }
+        public async Task<int> GetTotalGamesAsync(string searchQuery)
+        {
+            var games = context.Games.AsQueryable();
+
+            if (!searchQuery.IsNullOrEmpty())
+            {
+                games = games.Where(g => g.Title.Contains(searchQuery) || g.Description.Contains(searchQuery));
+            }
+
+            return await games.CountAsync();
+        }
+
 
         /// <summary>
         /// Retrieves all games.

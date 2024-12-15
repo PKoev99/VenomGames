@@ -13,7 +13,14 @@ namespace VenomGames.Core.Contracts
         /// Searches for games from the database.
         /// </summary>
         /// <returns>List of all games.</returns>
-        Task<IEnumerable<GameOutputModel>> GetGamesAsync(GetGamesQuery queery);
+        Task<IEnumerable<GameOutputModel>> GetGamesAsync(int page, int pageSize, string query);
+
+        /// <summary>
+        /// Gets the total amount of games.
+        /// </summary>
+        /// <param name="searchQuery"></param>
+        /// <returns></returns>
+        Task<int> GetTotalGamesAsync(string query);
 
         /// <summary>
         /// Retrieves all games.

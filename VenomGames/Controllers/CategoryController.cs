@@ -47,7 +47,7 @@ namespace VenomGames.Controllers
 
         // GET: Category/Edit/{id}
         public async Task<IActionResult> Edit(int id)
-        {
+       {
             var category = await categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
