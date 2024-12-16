@@ -123,16 +123,15 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Updates an existing order.
         /// </summary>
-        public async Task UpdateOrderAsync(OrderUpdateDTO order)
+        public async Task UpdateOrderAsync(OrderUpdateDTO orderUpdateDto)
         {
-            Order newOrder = new Order()
-            {                
-                OrderDate = order.OrderDate,
-                TotalPrice = order.Price,
-                UserId = order.UserId
-            };
+            var order = await context.Orders.FindAsync(orderUpdateDto.Id);
+            if (order == null)
+                throw new NotFoundException(nameof(Order),orderUpdateDto.Id);
 
-            context.Orders.Update(newOrder);
+            order.TotalPrice = orderUpdateDto.Price;
+            order.OrderDate = orderUpdateDto.OrderDate;
+
             await context.SaveChangesAsync();
         }
 

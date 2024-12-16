@@ -125,6 +125,7 @@ namespace VenomGames.Core.Services
             if (cartItem != null && cartItem.ShoppingCart.UserId == userId)
             {
                 cartItem.Quantity = quantity;
+                cartItem.ShoppingCart.TotalPrice = (cartItem.Quantity * cartItem.Price);
                 _context.Update(cartItem);
                 await _context.SaveChangesAsync();
             }

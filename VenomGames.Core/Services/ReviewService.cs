@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
+using VenomGames.Core.DTOs.Order;
 using VenomGames.Core.DTOs.Review;
 using VenomGames.Infrastructure.Data;
 using VenomGames.Infrastructure.Data.Models;
@@ -110,18 +110,22 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Updates an existing review.
         /// </summary>
-        public async Task UpdateReviewAsync(ReviewUpdateDTO review)
+        public async Task UpdateReviewAsync(ReviewUpdateDTO reviewUpdateDTO)
         {
-            Review newOrder = new Review()
+            var review = await context.Reviews.FindAsync(reviewUpdateDTO.Id);
+            if (review == null)
             {
-                GameId = review.GameId,
-                Rating = review.Rating,
-                Content = review.Content,
-                CreatedAt = review.CreatedAt,
-                UserId = review.UserId
-            };
+                throw new NotFoundException(nameof(Review), reviewUpdateDTO.Id);
+            }
 
-            context.Reviews.Update(newOrder);
+            review.Content = reviewUpdateDTO.Content;
+            review.Rating = reviewUpdateDTO.Rating;
+            review.CreatedAt = reviewUpdateDTO.CreatedAt;
+            review.UserId = reviewUpdateDTO.UserId;
+            review.GameId = reviewUpdateDTO.GameId;
+
+
+            context.Reviews.Update(review);
             await context.SaveChangesAsync();
         }
 

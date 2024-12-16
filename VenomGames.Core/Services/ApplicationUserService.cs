@@ -62,7 +62,7 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Registers a new user using ASP.NET Identity.
         /// </summary>
-        public async Task<IdentityResult> RegisterUser(ApplicationUser user, string password)
+        public async Task<IdentityResult> RegisterUserAsync(ApplicationUser user, string password)
         {
             return await userManager.CreateAsync(user, password);
         }
@@ -70,7 +70,7 @@ namespace VenomGames.Core.Services
         /// <summary>
         /// Adds a user to a specified role.
         /// </summary>
-        public async Task<IdentityResult> AddUserToRole(ApplicationUser user, string role)
+        public async Task<IdentityResult> AddUserToRoleAsync(ApplicationUser user, string role)
         {
             return await userManager.AddToRoleAsync(user, role);
         }

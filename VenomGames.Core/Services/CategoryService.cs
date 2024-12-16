@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
 using VenomGames.Core.Common.Exceptions;
 using VenomGames.Core.Contracts;
 using VenomGames.Core.DTOs.Category;
@@ -28,6 +26,12 @@ namespace VenomGames.Core.Services
         public async Task<IEnumerable<CategoryOutputModel>> GetAllCategoriesAsync()
         {
             IEnumerable<Category> categories = await context.Categories.ToListAsync();
+
+            if (categories == null) 
+            {
+                throw new ArgumentNullException(nameof(categories));
+            }
+
 
             return categories.Select(c => new CategoryOutputModel
             {
@@ -85,7 +89,7 @@ namespace VenomGames.Core.Services
 
             if (category == null)
             {
-                throw new NotFoundException(nameof(Category), category.CategoryId);
+                throw new NotFoundException(nameof(Category), categoryDTO.Id);
             }
 
             category.Name = categoryDTO.Name;
