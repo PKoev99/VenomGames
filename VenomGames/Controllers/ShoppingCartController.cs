@@ -66,7 +66,6 @@ namespace VenomGames.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCart(int itemId)
         {
-            Console.WriteLine("Received Item ID: " + itemId);
             if (itemId == 0)
             {
                 TempData["ErrorMessage"] = "Invalid item ID.";

@@ -9,18 +9,22 @@ namespace VenomGames.Controllers
     public class OrderController : BaseController
     {
         private readonly IOrderService orderService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public OrderController(IOrderService _orderService, IShoppingCartService _shoppingCartService, UserManager<ApplicationUser> _userManager)
             :base(_shoppingCartService,_userManager)
         {
             orderService = _orderService;
+            userManager = _userManager;
         }
 
         public async Task<IActionResult> Index()
         {
             await SetCartItemCountAsync();
 
-            IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersAsync();
+            var userId = userManager.GetUserId(User);
+
+            IEnumerable<OrderOutputModel> orders = await orderService.GetOrdersByUserIdAsync(userId);
             return View(orders);
         }
 

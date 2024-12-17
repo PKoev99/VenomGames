@@ -16,6 +16,7 @@
             <th>Game</th>
             <th>Price</th>
             <th>Quantity</th>
+            <th>Total Price</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
                 <td>@item.GameName</td>
                 <td>@item.Price.ToString("C")</td>
                 <td>@item.Quantity</td>  
+                <td>@((item.Price*item.Quantity).ToString("C"))</td>
             </tr>
         }
     </tbody>
