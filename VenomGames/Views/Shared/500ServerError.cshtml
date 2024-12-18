@@ -1,0 +1,14 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Internal Server Error";
+}
+
+<div style="text-align: center; margin-top: 50px;">
+
+    <img src="https://media.istockphoto.com/id/648691974/vector/website-error-500-internal-server-error.jpg?s=612x612&w=0&k=20&c=avIYjgWbnJOjKaVmoZDPB5wtU8yAS7pKM3Pya4noRPA="
+         alt="500 Internal Server Error Illustration"
+         style="max-width: 100%; height: auto; margin: 20px auto;" />
+    <a href="@Url.Action("Index", "Home")" style="display: inline-block; margin-top: 20px; font-size: 18px; text-decoration: none; color: #007bff;">
+        Return to Home
+    </a>
+</div>

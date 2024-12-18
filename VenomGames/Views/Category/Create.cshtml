@@ -1,0 +1,12 @@
+﻿@model CategoryCreateDTO
+
+<h2>Create Category</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">Category Name</label>
+        <input type="text" class="form-control" id="Name" name="Name" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Create Category</button>
+</form>

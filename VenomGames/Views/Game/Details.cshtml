@@ -1,0 +1,83 @@
+﻿@model GameOutputModel
+
+<div class="container mt-5">
+    <h2 class="mb-4">Game Details</h2>
+
+    <div class="card shadow-sm p-4">
+        <div class="mb-3">
+            <h3 class="card-title">@Model.Title</h3>
+        </div>
+
+        <div class="mb-3">
+            <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded" style="max-width: 300px;">
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Description:</label>
+            <p>@Model.Description</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Price:</label>
+            <p>@Model.Price.ToString("C")</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-bold">Categories:</label>
+            @if (Model.GameCategories != null && Model.GameCategories.Any())
+            {
+                <ul>
+                    @foreach (var gameCategory in Model.GameCategories)
+                    {
+                        <li>@gameCategory.Category.Name</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No categories assigned to this game.</p>
+            }
+        </div>
+
+        <div class="mt-4">
+            <a href="@Url.Action("Index", "Game")" class="btn btn-primary">Back to Games</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="@Url.Action("Create", "Review", new { id = Model.GameId })" class="btn btn-primary">Add Review</a>
+            }
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post" style="display:inline;">
+                    <input type="hidden" name="gameId" value="@Model.GameId" />
+                    <button type="submit" class="btn btn-primary">Order</button>
+                </form>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "ApplicationUser", new { returnUrl = Url.Action("Index", "Game") })" class="btn btn-primary">Order</a>
+            }
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Content</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model.Reviews)
+                {
+                    <tr>
+                        <td>@review.Rating</td>
+                        <td>@review.Content</td>
+                        <td>@review.UserName</td>
+                        <td>@review.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

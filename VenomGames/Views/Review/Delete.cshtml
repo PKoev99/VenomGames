@@ -1,0 +1,20 @@
+﻿@model ReviewOutputModel
+
+@{
+    ViewData["Title"] = "Delete Review";
+}
+
+<h1>Delete Review</h1>
+
+<div>
+    <p><strong>Game:</strong> @Model.GameTitle</p>
+    <p><strong>User:</strong> @Model.UserName</p>
+    <p><strong>Rating:</strong> @Model.Rating</p>
+    <p><strong>Content:</strong> @Model.Content</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ReviewId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,8 @@
+﻿@model CategoryOutputModel
+
+<h2>Are you sure you want to delete the category "@Model.Name"?</h2>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="@Url.Action("Index", "Category")" class="btn btn-secondary">Cancel</a>
+</form>

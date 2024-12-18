@@ -1,0 +1,19 @@
+﻿@model ReviewOutputModel
+
+@{
+    ViewData["Title"] = "Review Details";
+}
+
+<h1>Review Details</h1>
+
+<div>
+    <p><strong>Game:</strong> @Model.GameTitle</p>
+    <p><strong>User:</strong> @Model.UserName</p>
+    <p><strong>Rating:</strong> @Model.Rating</p>
+    <p><strong>Content:</strong> @Model.Content</p>
+    <p><strong>Date Added:</strong> @Model.CreatedAt</p>
+
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.ReviewId" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

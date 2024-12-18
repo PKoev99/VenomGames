@@ -1,8 +1,46 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container p-0">
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Categories</h3>
+            <ul class="list-group">
+                @foreach (var category in Model.Categories)
+                {
+                    <li class="list-group-item">
+                        <a href="@Url.Action("Index", "Home", new { categoryId = category.Id })">
+                            @category.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        <div class="col-md-9">
+            <h3>
+                @if (!string.IsNullOrEmpty(Model.CategoryName))
+                {
+                    @($"{Model.CategoryName} Games")
+                }
+                else
+                {
+                    @("Popular Games")
+                }
+            </h3>
+            <div class="row">
+                @foreach (var game in Model.FeaturedGames)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img class="card-img-top" src="@game.ImageUrl" alt="@game.Title" />
+                            <div class="card-body">
+                                <h5 class="card-title">@game.Title</h5>
+                                <p class="card-text">@game.Description</p>
+                                <p class="card-text"><strong>@game.Price.ToString("C")</strong></p>
+                                <a href="@Url.Action("Details", "Game", new { id = game.GameId })" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
